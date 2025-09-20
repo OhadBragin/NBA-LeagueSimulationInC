@@ -1,8 +1,13 @@
 #include "basketball_sim.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main() {
+
+    //initialize random seed
+    srand(time(NULL));
+
     printf("Basketball Simulation Starting...\n");
 
     // Initialize simulation

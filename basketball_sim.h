@@ -14,21 +14,15 @@
 #define PLAYOFFS_DAYS 28
 #define FINALS_DAYS 7
 
-// Forward declarations
-typedef struct Player Player;
-typedef struct Team Team;
-typedef struct Match Match;
-typedef struct Simulation Simulation;
-
 // ---player---
-typedef struct {
+typedef struct Player {
     char name[30];
     int points; //total points scored in the current season
     int gamesPlayed; //total games played this season
 } Player;
 
 // ---team---
-typedef struct {
+typedef struct Team {
     char name[50];
     int PR; //power-ranking
     int wins; //total wins
@@ -38,8 +32,8 @@ typedef struct {
     Player roster[MAX_PLAYERS];
 } Team;
 
-// ---game---
-typedef struct {
+// ---match--- (Note: renamed from Match to avoid conflicts)
+typedef struct Match {
     Team *teamA;
     Team *teamB;
     int scoreA;
@@ -48,7 +42,7 @@ typedef struct {
 } Match;
 
 // ---Simulation---
-typedef struct {
+typedef struct Simulation {
     int currentDay; //current day of the season
     int totalDays; //total days in the season
     Team teams[TEAMS_COUNT];
