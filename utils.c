@@ -39,7 +39,7 @@ int getUserChoice(int min, int max) {
     int input;
     do {
         scanf("%d", &input);
-    }while (!(input >= min && input <= max);
+    }while (!(input >= min && input <= max));
     return input;
 
 }
