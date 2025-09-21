@@ -24,7 +24,7 @@ typedef struct Player {
 
 // ---team---
 typedef struct Team {
-    char name[50];
+    char *name;
     int PR; //power-ranking
     int wins; //total wins
     int losses; //total losses
@@ -61,7 +61,7 @@ void cleanupSimulation(Simulation *sim);
 // team.c
 void initializeTeam(Team *team, const char *name, int conference);
 void updateTeamStats(Team *team, int points, int isWin);
-void calculatePowerRanking(Team *team);
+void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner);
 void printTeamInfo(const Team *team);
 void addPlayerToTeam(Team *team, const char *playerName);
 
@@ -92,6 +92,8 @@ void clearInputBuffer(void);
 int getRandomNumber(int min, int max);
 void pressEnterToContinue(void);
 int getUserChoice(int min, int max);
+int calculateOutcomeByPercentage(double p);
+double calculateProbability(int prA, int prB);
 
 // file_io.c
 void saveSimulation(const Simulation *sim, const char *filename);

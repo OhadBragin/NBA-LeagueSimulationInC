@@ -21,7 +21,7 @@ int getRandomNumber(int min, int max) {
 }
 
 
-int getRandomDouble(double p){
+int calculateOutcomeByPercentage(double p){
     // Will be used to determine result of game
     // Return 1 or 0 based on the percentage
     // higher percentage will more likely return 1
@@ -32,10 +32,12 @@ int getRandomDouble(double p){
     return r < p;
 }
 
-int caluclateProbality(int prA, int prB) {
-    double prob =  1.0 / (1 + pow(10, (prA - prB) / 400.0));
-    return getRandomDouble(prob); //returns 1 for team A win, 0 for team B
+double calculateProbability(int prA, int prB) {
+    return  1.0 / (1 + pow(10, (prA - prB) / 400.0));
+
 }
+
+
 
 
 int getUserChoice(int min, int max) {
