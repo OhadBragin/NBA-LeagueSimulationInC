@@ -14,7 +14,8 @@
 #define REGULAR_SEASON_DAYS 82
 #define PLAYOFFS_DAYS 28
 #define FINALS_DAYS 7
-
+#define BASE_ELO 1500
+#define BASE_POINTS 100
 // ---player---
 typedef struct Player {
     char name[30];
