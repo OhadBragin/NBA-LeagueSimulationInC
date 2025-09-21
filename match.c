@@ -5,6 +5,9 @@ void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage) {
     // Set game stage (regular/playoffs/finals)
     // Initialize scores to zero
     // TODO: Implement match initialization
+    match->teamA = teamA;
+    match->teamB = teamB;
+    match->stage = stage;
 }
 
 void simulateMatch(Match *match) {
@@ -12,6 +15,7 @@ void simulateMatch(Match *match) {
     // Calculate scores based on team strength
     // Update team and player statistics
     // TODO: Implement match simulation logic
+    //get probability
 }
 
 int calculateTeamScore(const Team *team) {
