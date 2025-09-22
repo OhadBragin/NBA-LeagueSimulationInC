@@ -15,7 +15,7 @@
 #define PLAYOFFS_DAYS 28
 #define FINALS_DAYS 7
 #define BASE_ELO 1500
-#define BASE_POINTS 100
+
 // ---player---
 typedef struct Player {
     char name[30];
@@ -74,8 +74,9 @@ void printPlayerStats(const Player *player);
 // match.c
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage);
 void simulateMatch(Match *match);
-int calculateTeamScore(const Team *team);
+void calculateGameScores(Team *teamA, Team *teamB, int teamAWins, int *scoreA, int *scoreB);
 void printMatchResult(const Match *match);
+int getK(Match *match);
 
 // schedule.c
 void generateSchedule(Simulation *sim);

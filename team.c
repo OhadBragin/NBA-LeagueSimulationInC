@@ -24,8 +24,8 @@ void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K
     // Calculate power ranking based on performance
     // Consider wins, losses, and point differential
     // TODO: Implement power ranking calculation
-    double aWin = (winner == 0) ? 1.0 : 0.0;
-    double bWin = (winner == 1) ? 1.0 : 0.0;
+    const double aWin = (winner == 0) ? 1.0 : 0.0;
+    const double bWin = (winner == 1) ? 1.0 : 0.0;
     //change ranking
     teamA->PR = (int)(teamA->PR + (K * (aWin - pA)));
     teamB->PR = (int)(teamB->PR + (K * (bWin - pB)));
