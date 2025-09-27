@@ -4,8 +4,13 @@ void initializeTeam(Team *team, const char *name, int conference) {
     // Initialize team with name and conference
     // Set up initial roster
     // Initialize stats to zero
-    // TODO: Implement team initialization
-
+    strcpy(team->name, name);
+    team->conference = conference;
+    team->wins = 0;
+    team->losses = 0;
+    team->PR = BASE_ELO;
+    team->seasonPoints = 0;
+    // TODO: Implement roster creation
 }
 
 
@@ -18,6 +23,7 @@ void updateTeamStats(Team *team, int points, int isWin) {
     team->wins += isWin;
     team->losses += !isWin;
     team->seasonPoints += points;
+    
 }
 
 void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner) { //0|team A / 1|team B

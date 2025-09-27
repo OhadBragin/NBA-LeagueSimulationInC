@@ -4,6 +4,9 @@ void initializePlayer(Player *player, const char *name) {
     // Initialize player with name
     // Set stats to zero
     // TODO: Implement player initialization
+    strcpy(player->name, name);
+    player->points = 0;
+    player->gamesPlayed = 0;
 }
 
 void updatePlayerStats(Player *player, int points) {
@@ -11,6 +14,8 @@ void updatePlayerStats(Player *player, int points) {
     // Increment games played
     // Add points to total
     // TODO: Implement player stats update
+    player->points += points;
+    player->gamesPlayed++;
 }
 
 void printPlayerStats(const Player *player) {
