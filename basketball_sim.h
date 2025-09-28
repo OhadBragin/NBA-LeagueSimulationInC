@@ -56,7 +56,7 @@ typedef struct Simulation {
     int currentDay; //current day of the season
     int totalDays; //total days in the season
     Team teams[TEAMS_COUNT];
-    Match schedule[MAX_GAMES_PER_DAY]; //schedule of all games in the current day
+    ScheduleList *matchSchedule; //schedule of all games in the current day
     int gamesToday;
 } Simulation;
 
