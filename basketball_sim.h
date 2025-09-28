@@ -16,6 +16,14 @@
 #define FINALS_DAYS 7
 #define BASE_ELO 1500
 
+// ---schedule linked list---
+typedef struct ScheduleList
+{
+    Match m;
+    ScheduleList *next;
+
+} ScheduleList
+
 // ---player---
 typedef struct Player {
     char name[30];
