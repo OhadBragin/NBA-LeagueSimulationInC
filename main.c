@@ -9,6 +9,10 @@ int main() {
 
     //initialize random seed
     srand(time(NULL));
+    //clone players file
+    cloneFile("nba_players.txt", "cloned.txt");
+
+    //initializations
 
     printf("Basketball Simulation Starting...\n");
 
@@ -23,5 +27,7 @@ int main() {
     cleanupSimulation(&sim);
 
     printf("Basketball Simulation Ended.\n");
+    //delete the cloned file
+    remove("cloned.txt");
     return 0;
 }

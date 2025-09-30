@@ -20,7 +20,22 @@ int getRandomNumber(int min, int max) {
 
 }
 
+void cloneFile(const char *src, const char *dest) {
+    FILE *fptr = fopen(src, "r");
+    FILE *cloned = fopen(dest, "w");
+    if (fptr == NULL || cloned == NULL) {
+        printf("Error opening file\n");
+        exit(1);
+    }
 
+    char buffer[MAX_NAME_LENGTH];
+    while (fgets(buffer, MAX_NAME_LENGTH, fptr)) {
+        fputs(buffer, cloned);
+    }
+
+    fclose(fptr);
+    fclose(cloned);
+}
 int calculateOutcomeByPercentage(double p){
     // Will be used to determine result of game
     // Return 1 or 0 based on the percentage

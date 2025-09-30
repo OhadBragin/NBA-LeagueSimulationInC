@@ -15,13 +15,16 @@
 #define PLAYOFFS_DAYS 28
 #define FINALS_DAYS 7
 #define BASE_ELO 1500
+#define TOTAL_PLAYER_COUNT 570
+#define MAX_NAME_LENGTH 30
 
 // ---player---
 typedef struct Player {
-    char name[30];
+    char name[MAX_NAME_LENGTH];
     int points; //total points scored in the current season
     int gamesPlayed; //total games played this season
 } Player;
+
 
 // ---team---
 typedef struct Team {
@@ -52,6 +55,8 @@ typedef struct Simulation {
     int gamesToday;
 } Simulation;
 
+
+
 // Function declarations from different modules
 // simulation.c
 void initializeSimulation(Simulation *sim);
@@ -60,7 +65,7 @@ void advanceDay(Simulation *sim);
 void cleanupSimulation(Simulation *sim);
 
 // team.c
-void initializeTeam(Team *team, const char *name, int conference);
+void initializeTeam(Team *team, const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount);
 void updateTeamStats(Team *team, int points, int isWin);
 void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner);
 void printTeamInfo(const Team *team);
@@ -70,6 +75,10 @@ void addPlayerToTeam(Team *team, const char *playerName);
 void initializePlayer(Player *player, const char *name);
 void updatePlayerStats(Player *player, int points);
 void printPlayerStats(const Player *player);
+void shuffleNameArray(char names[][MAX_NAME_LENGTH], int count);
+int loadlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName);
+void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCount);
+void freeRoster(Player *roster);
 
 // match.c
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage);
@@ -96,6 +105,7 @@ void pressEnterToContinue(void);
 int getUserChoice(int min, int max);
 int calculateOutcomeByPercentage(double p);
 double calculateProbability(int prA, int prB);
+void cloneFile(const char *src, const char *dest);
 
 // file_io.c
 void saveSimulation(const Simulation *sim, const char *filename);

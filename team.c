@@ -1,6 +1,8 @@
 #include "basketball_sim.h"
 
-void initializeTeam(Team *team, const char *name, int conference) {
+
+
+void initializeTeam(Team *team, const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount) {
     // Initialize team with name and conference
     // Set up initial roster
     // Initialize stats to zero
@@ -11,6 +13,7 @@ void initializeTeam(Team *team, const char *name, int conference) {
     team->PR = BASE_ELO;
     team->seasonPoints = 0;
     // TODO: Implement roster creation
+    createRoster(team->roster, names, playerCount);
 }
 
 
