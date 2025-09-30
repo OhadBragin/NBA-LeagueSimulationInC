@@ -12,6 +12,9 @@ void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage) {
     match->teamA = teamA;
     match->teamB = teamB;
     match->stage = stage;
+    match->scoreA = 0;
+    match->scoreB = 0;
+    match->day = -1;
 }
 
 int getK(Match *match) {

@@ -1,7 +1,6 @@
 #include "basketball_sim.h"
 
 
-
 Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount) {
     // Allocate memory for new team
     Team *team = (Team *)malloc(sizeof(Team));
@@ -30,6 +29,32 @@ Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LEN
 
     return team;
 }
+
+void initializeAllTeams(Simulation *sim, char names[][MAX_NAME_LENGTH], int *playerCount) {
+    int conference;
+    const char *nbaTeamNames[TEAMS_COUNT] = {
+        // East (0-14)
+        "Boston Celtics", "Brooklyn Nets", "New York Knicks", "Philadelphia 76ers", "Toronto Raptors",
+        "Chicago Bulls", "Cleveland Cavaliers", "Detroit Pistons", "Indiana Pacers", "Milwaukee Bucks",
+        "Atlanta Hawks", "Charlotte Hornets", "Miami Heat", "Orlando Magic", "Washington Wizards",
+
+        // West (15 - 29)
+        "Denver Nuggets", "Minnesota Timberwolves", "Oklahoma City Thunder", "Portland Trail Blazers", "Utah Jazz",
+        "Golden State Warriors", "LA Clippers", "Los Angeles Lakers", "Phoenix Suns", "Sacramento Kings",
+        "Dallas Mavericks", "Houston Rockets", "Memphis Grizzlies", "New Orleans Pelicans", "San Antonio Spurs"
+    };
+
+    for (int i = 0; i < TEAMS_COUNT; i++) {
+        if (i < 15) {
+            conference = 0;
+        } else conference = 1;
+
+        Team *tmp = initializeTeam(nbaTeamNames[i], conference, names, playerCount);
+        sim->teams[i] = *tmp; //enter pointer's value
+        free(tmp);
+    }
+}
+
 
 
 void updateTeamStats(Team *team, int points, int isWin) {

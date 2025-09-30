@@ -10,7 +10,7 @@
 // Constants
 #define MAX_PLAYERS 5
 #define TEAMS_COUNT 30
-#define MAX_GAMES_PER_DAY 16
+#define MAX_GAMES_PER_DAY 5
 #define REGULAR_SEASON_DAYS 82
 #define PLAYOFFS_DAYS 28
 #define FINALS_DAYS 7
@@ -45,14 +45,23 @@ typedef struct Match {
     int scoreA;
     int scoreB;
     int stage; // 0 = Regular, 1 = Playoffs, 2 = Finals
+    int day; // scheduled day the match will take place
 } Match;
+
+typedef struct ScheduleList
+{
+    Match m;
+    struct ScheduleList *next;
+
+} ScheduleList;
 
 // ---Simulation---
 typedef struct Simulation {
     int currentDay; //current day of the season
     int totalDays; //total days in the season
-    Team teams[TEAMS_COUNT];
-    int gamesToday;
+    Team teams[TEAMS_COUNT]; //teams array
+    ScheduleList *matchSchedule; //schedule of all games in the season
+    int gamesToday; //games that will be played in the current day
 } Simulation;
 
 
@@ -66,6 +75,7 @@ void cleanupSimulation(Simulation *sim);
 
 // team.c
 Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount);
+void initializeAllTeams(Simulation *sim, char names[][MAX_NAME_LENGTH], int *playerCount);
 void updateTeamStats(Team *team, int points, int isWin);
 void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner);
 void printTeamInfo(const Team *team);
