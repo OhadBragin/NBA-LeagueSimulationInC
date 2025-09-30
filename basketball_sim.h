@@ -8,7 +8,7 @@
 #include <math.h>
 
 // Constants
-#define MAX_PLAYERS 15
+#define MAX_PLAYERS 5
 #define TEAMS_COUNT 30
 #define MAX_GAMES_PER_DAY 16
 #define REGULAR_SEASON_DAYS 82
@@ -18,13 +18,6 @@
 #define TOTAL_PLAYER_COUNT 570
 #define MAX_NAME_LENGTH 30
 
-// ---schedule linked list---
-typedef struct ScheduleList
-{
-    Match m;
-    ScheduleList *next;
-
-} ScheduleList
 
 // ---player---
 typedef struct Player {
@@ -59,7 +52,6 @@ typedef struct Simulation {
     int currentDay; //current day of the season
     int totalDays; //total days in the season
     Team teams[TEAMS_COUNT];
-    ScheduleList *matchSchedule; //schedule of all games in the current day
     int gamesToday;
 } Simulation;
 
@@ -73,7 +65,7 @@ void advanceDay(Simulation *sim);
 void cleanupSimulation(Simulation *sim);
 
 // team.c
-void initializeTeam(Team *team, const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount);
+Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount);
 void updateTeamStats(Team *team, int points, int isWin);
 void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner);
 void printTeamInfo(const Team *team);
@@ -84,9 +76,10 @@ void initializePlayer(Player *player, const char *name);
 void updatePlayerStats(Player *player, int points);
 void printPlayerStats(const Player *player);
 void shuffleNameArray(char names[][MAX_NAME_LENGTH], int count);
-int loadlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName);
+int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName);
 void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCount);
 void freeRoster(Player *roster);
+void printRoster(const Player *roster);
 
 // match.c
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage);

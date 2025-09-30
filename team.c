@@ -2,20 +2,34 @@
 
 
 
-void initializeTeam(Team *team, const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount) {
+Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount) {
+    // Allocate memory for new team
+    Team *team = (Team *)malloc(sizeof(Team));
+    if (team == NULL) {
+        printf("Error allocating memory for team\n");
+        exit(1);
+    }
+
     // Initialize team with name and conference
-    // Set up initial roster
-    // Initialize stats to zero
+    team->name = (char *)malloc(strlen(name) + 1);
+    if (team->name == NULL) {
+        printf("Error allocating memory for team name\n");
+        free(team);
+        exit(1);
+    }
     strcpy(team->name, name);
+
     team->conference = conference;
     team->wins = 0;
     team->losses = 0;
     team->PR = BASE_ELO;
     team->seasonPoints = 0;
-    // TODO: Implement roster creation
-    createRoster(team->roster, names, playerCount);
-}
 
+    // Create roster
+    createRoster(team->roster, names, playerCount);
+
+    return team;
+}
 
 
 void updateTeamStats(Team *team, int points, int isWin) {
@@ -42,8 +56,27 @@ void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K
 
 void printTeamInfo(const Team *team) {
     // Print team name, record, stats
+    printf("\n");
+    printf("=====================================\n");
+    printf("            %s\n", team->name);
+    printf("=====================================\n");
+    printf("Conference: %s\n", team->conference == 0 ? "East" : "West");
+    printf("Record: %d-%d\n", team->wins, team->losses);
+    printf("Power Ranking: %d\n", team->PR);
+    printf("Season Points: %d\n", team->seasonPoints);
+
+    int gamesPlayed = team->wins + team->losses;
+
+    if (gamesPlayed > 0) {
+        printf("Points Per Game: %.1f\n", (double)team->seasonPoints / gamesPlayed);
+    }
+
+    printf("=====================================\n");
+
     // Print roster information
-    // TODO: Implement team info display
+    printRoster(team->roster);
+
+    printf("\n");
 }
 
 void addPlayerToTeam(Team *team, const char *playerName) {
@@ -51,3 +84,5 @@ void addPlayerToTeam(Team *team, const char *playerName) {
     // Initialize player stats
     // TODO: Implement player addition
 }
+
+

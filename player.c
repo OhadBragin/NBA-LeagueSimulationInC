@@ -23,22 +23,24 @@ void shuffleNameArray(char names[][MAX_NAME_LENGTH], int count) {
     for (int i = count - 1; i > 0; i--) {
         int j = getRandomNumber(0, i);
 
-        //swap names[i], names[j]
-        char temp[MAX_NAME_LENGTH];
-        strcpy(temp, names[i]);
-        strcpy(names[i], names[j]);
-        strcpy(names[j], temp);
+        if (i != j) {
+            //swap names[i], names[j]
+            char temp[MAX_NAME_LENGTH];
+            strcpy(temp, names[i]);
+            strcpy(names[i], names[j]);
+            strcpy(names[j], temp);
+        }
+
     }
 }
 
 //load players from file to array
 //return the count of players loaded
 
-int loadlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName) {
-    //open file
-    FILE *fptr = fopen(fileName, "r");
+int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *filename) {
+    FILE *fptr = fopen(filename, "r");
     if (fptr == NULL) {
-        printf("Error opening file %s\n", fileName);
+        printf("Error opening %s file!\n", filename);
         exit(1);
     }
 
@@ -46,12 +48,19 @@ int loadlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName) {
     int count = 0;
 
     while (fgets(buffer, MAX_NAME_LENGTH, fptr) && count < TOTAL_PLAYER_COUNT) {
-        //copy all names to array
-        strcpy(names[count], buffer);
-        count++;
-    }
+        // Remove newline character if present
+        buffer[strcspn(buffer, "\n")] = '\0';
+        buffer[strcspn(buffer, "\r")] = '\0';  // Also remove carriage return
 
+        // Only add non-empty names
+        if (strlen(buffer) > 0) {
+            strcpy(names[count], buffer);
+            names[count][MAX_NAME_LENGTH - 1] = '\0';  // Ensure null termination
+            count++;
+        }
+    }
     fclose(fptr);
+
     return count;
 }
 
@@ -80,6 +89,15 @@ void freeRoster(Player *roster) {
     if (roster != NULL) {
         free(roster);
     }
+}
+
+void printRoster(const Player *roster) {
+    printf("\n=== TEAM ROSTER ===\n");
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        printf("%2d. %s (Points: %d, Games: %d)\n", i + 1,
+               roster[i].name, roster[i].points, roster[i].gamesPlayed);
+    }
+    printf("==================\n");
 }
 
 void printPlayerStats(const Player *player) {
