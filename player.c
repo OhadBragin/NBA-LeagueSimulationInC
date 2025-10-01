@@ -92,13 +92,38 @@ void freeRoster(Player *roster) {
 }
 
 void printRoster(const Player *roster) {
-    printf("\n=== TEAM ROSTER ===\n");
+    printf("\n");
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
+    printf("%s%s            ROSTER%s\n", COLOR_BOLD, COLOR_HEADER, COLOR_RESET);
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
+
+    // Find top scorer (by PPG)
+    int topIndex = findHighestPPG(roster);
+
+    // Print each player
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        printf("%2d. %s (Points: %d, Games: %d)\n", i + 1,
-               roster[i].name, roster[i].points, roster[i].gamesPlayed);
+        if (roster[i].name[0] == '\0') continue;
+
+        double ppg = roster[i].gamesPlayed > 0
+                     ? (double)roster[i].points / roster[i].gamesPlayed
+                     : 0.0;
+
+        // Top scorer in green, others in white
+        const char *nameColor = (i == topIndex) ? COLOR_SUCCESS : COLOR_PLAYER;
+
+        printf(" %s%2d.%s %s%-20s%s  %sPoints:%s %s%4d%s  %sGames:%s %s%3d%s  %sPPG:%s %s%4.1f%s\n",
+               COLOR_NUMBER, i + 1, COLOR_RESET,       // player index
+               nameColor, roster[i].name, COLOR_RESET, // player name
+               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, roster[i].points, COLOR_RESET,  // points
+               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, roster[i].gamesPlayed, COLOR_RESET, // games
+               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, ppg, COLOR_RESET); // ppg
     }
-    printf("==================\n");
+
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
+    printf("\n");
 }
+
+
 
 void printPlayerStats(const Player *player) {
     // Print player name and statistics

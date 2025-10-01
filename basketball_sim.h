@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
-
+#include "colors.h"
 // Constants
 #define MAX_PLAYERS 5
 #define TEAMS_COUNT 30
@@ -77,7 +77,7 @@ void cleanupSimulation(Simulation *sim);
 Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LENGTH], int *playerCount);
 void initializeAllTeams(Simulation *sim, char names[][MAX_NAME_LENGTH], int *playerCount);
 void updateTeamStats(Team *team, int points, int isWin);
-void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner);
+void calculatePowerRanking(Team *teamA, Team *teamB, double pA, int K, int winner);
 void printTeamInfo(const Team *team);
 void addPlayerToTeam(Team *team, const char *playerName);
 
@@ -92,11 +92,13 @@ void freeRoster(Player *roster);
 void printRoster(const Player *roster);
 
 // match.c
+Match* createMatch();
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage);
 void simulateMatch(Match *match);
-void calculateGameScores(Team *teamA, Team *teamB, int teamAWins, int *scoreA, int *scoreB);
+void calculateGameScores(Match *m, int teamAWins);
 void printMatchResult(const Match *match);
 int getK(Match *match);
+
 
 // schedule.c
 void generateSchedule(Simulation *sim);
@@ -108,6 +110,7 @@ void printTodaysGames(const Simulation *sim);
 void printStandings(const Simulation *sim);
 void sortTeamsByRecord(Team teams[], int count);
 void printConferenceStandings(const Simulation *sim, int conference);
+int findHighestPPG(const Player *roster);
 
 // utils.c
 void clearInputBuffer(void);

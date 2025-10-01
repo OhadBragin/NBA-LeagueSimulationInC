@@ -6,6 +6,21 @@ void printStandings(const Simulation *sim) {
     // TODO: Implement standings display
 }
 
+int findHighestPPG(const Player* roster) {
+    int highestPPG = 0;
+    int currentPPG;
+    int index = 0;
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        currentPPG = roster[i].points / roster[i].gamesPlayed;
+        if (currentPPG > highestPPG) {
+            highestPPG = currentPPG;
+            index = i;
+        }
+    }
+
+    return index;
+}
+
 void sortTeamsByRecord(Team teams[], int count) {
     // Sort teams by win-loss record
     // Consider tiebreakers (point differential, etc.)

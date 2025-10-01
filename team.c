@@ -68,35 +68,46 @@ void updateTeamStats(Team *team, int points, int isWin) {
     
 }
 
-void calculatePowerRanking(Team *teamA, Team *teamB, double pA, double pB, int K, int winner) { //0|team A / 1|team B
+void calculatePowerRanking(Team *teamA, Team *teamB, double pA, int K, int winner) { //0|team A / 1|team B
     // Calculate power ranking based on performance
     // Consider wins, losses, and point differential
     // TODO: Implement power ranking calculation
     const double aWin = (winner == 0) ? 1.0 : 0.0;
     const double bWin = (winner == 1) ? 1.0 : 0.0;
+    double pB = 1.0 - pA;
     //change ranking
     teamA->PR = (int)(teamA->PR + (K * (aWin - pA)));
     teamB->PR = (int)(teamB->PR + (K * (bWin - pB)));
 }
 
 void printTeamInfo(const Team *team) {
-    // Print team name, record, stats
-    printf("\n");
-    printf("=====================================\n");
-    printf("            %s\n", team->name);
-    printf("=====================================\n");
-    printf("Conference: %s\n", team->conference == 0 ? "East" : "West");
-    printf("Record: %d-%d\n", team->wins, team->losses);
-    printf("Power Ranking: %d\n", team->PR);
-    printf("Season Points: %d\n", team->seasonPoints);
-
     int gamesPlayed = team->wins + team->losses;
+    const char *confColor = team->conference == 0 ? COLOR_EAST : COLOR_WEST;
+    const char *confName = team->conference == 0 ? "East" : "West";
+
+    // Print header
+    printf("\n");
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
+    printf("%s%s            %-25s%s\n", COLOR_BOLD, COLOR_HEADER, team->name, COLOR_RESET);
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
+
+    // Print team stats with alignment
+    printf("%sConference:        %s%s%s%s\n",
+           COLOR_STAT_LABEL, confColor, confName, COLOR_RESET, COLOR_RESET);
+    printf("%sRecord:            %s%dW-%dL%s\n",
+           COLOR_STAT_LABEL, COLOR_STAT_VALUE, team->wins, team->losses, COLOR_RESET);
+    printf("%sPower Ranking:     %s%d%s\n",
+           COLOR_STAT_LABEL, COLOR_NUMBER, team->PR, COLOR_RESET);
+    printf("%sSeason Points:     %s%d%s\n",
+           COLOR_STAT_LABEL, COLOR_STAT_VALUE, team->seasonPoints, COLOR_RESET);
 
     if (gamesPlayed > 0) {
-        printf("Points Per Game: %.1f\n", (double)team->seasonPoints / gamesPlayed);
+        printf("%sPoints Per Game:   %s%.1f%s\n",
+               COLOR_STAT_LABEL, COLOR_STAT_VALUE,
+               (double)team->seasonPoints / gamesPlayed, COLOR_RESET);
     }
 
-    printf("=====================================\n");
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
 
     // Print roster information
     printRoster(team->roster);
