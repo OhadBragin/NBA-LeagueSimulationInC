@@ -14,8 +14,9 @@ int main() {
     char names[TOTAL_PLAYER_COUNT][MAX_NAME_LENGTH];
     int playerCount;
     enableColors();
+
     printf("Basketball Simulation Starting...\n");
-    
+
     playerCount = loadPlayerNames(names, "nba_players.txt");
     shuffleNameArray(names, TOTAL_PLAYER_COUNT);
     Team *team = initializeTeam("The Bragins", 0, names, &playerCount );
@@ -31,6 +32,8 @@ int main() {
     //cleanupSimulation(&sim);
 
     printf("Basketball Simulation Ended.\n");
+    printf("Press Enter to exit...");
+    getchar();
     //delete the cloned file
     return 0;
 }

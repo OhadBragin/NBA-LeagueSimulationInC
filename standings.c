@@ -7,11 +7,10 @@ void printStandings(const Simulation *sim) {
 }
 
 int findHighestPPG(const Player* roster) {
-    int highestPPG = 0;
-    int currentPPG;
+    double highestPPG = 0;
     int index = 0;
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        currentPPG = roster[i].points / roster[i].gamesPlayed;
+        const double currentPPG = (double)roster[i].points / roster[i].gamesPlayed;
         if (currentPPG > highestPPG) {
             highestPPG = currentPPG;
             index = i;
