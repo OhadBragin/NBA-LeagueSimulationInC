@@ -108,12 +108,13 @@ void printTodaysGames(const Simulation *sim);
 
 // standings.c
 void printStandings(const Simulation *sim);
-void sortTeamsByRecord(Team teams[], int count);
+void sortTeamsByPR(Team teams[], int count);
 void printConferenceStandings(const Simulation *sim, int conference);
 int findHighestPPG(const Player *roster);
 
 // utils.c
-void clearInputBuffer(void);
+void clearScreen();
+void clearInputBuffer();
 int getRandomNumber(int min, int max);
 void pressEnterToContinue(void);
 int getUserChoice(int min, int max);

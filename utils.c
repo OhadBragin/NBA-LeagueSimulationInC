@@ -1,7 +1,7 @@
 #include "basketball_sim.h"
 
 
-void clearInputBuffer(void) {
+void clearScreen() {
     // Clear stdin buffer for clean input
     // TODO: Implement input buffer clearing
     #ifdef _WIN32
@@ -9,6 +9,11 @@ void clearInputBuffer(void) {
     #else
         system("clear"); // macOS / Linux
     #endif
+}
+
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
 
 int getRandomNumber(int min, int max) {

@@ -19,12 +19,12 @@ int main() {
 
     playerCount = loadPlayerNames(names, "nba_players.txt");
     shuffleNameArray(names, TOTAL_PLAYER_COUNT);
-    Team *team = initializeTeam("The Bragins", 0, names, &playerCount );
-    printTeamInfo(team);
-    // Initialize simulation
-    //Simulation sim;
-    //initializeSimulation(&sim);
 
+    // Initialize simulation
+    Simulation sim;
+    initializeSimulation(&sim);
+    initializeAllTeams(&sim, names, &playerCount);
+    printStandings(&sim);
     // Main game loop
     //runSimulation(&sim);
 

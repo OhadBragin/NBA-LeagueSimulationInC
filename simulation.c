@@ -5,6 +5,8 @@ void initializeSimulation(Simulation *sim) {
     // Set up teams
     // Generate initial schedule
     // TODO: Implement initialization logic
+    sim->currentDay = 0;
+    sim->totalDays = 0;
 }
 
 void runSimulation(Simulation *sim) {
