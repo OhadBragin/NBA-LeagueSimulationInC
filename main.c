@@ -1,4 +1,5 @@
 #include "basketball_sim.h"
+#include "colors.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -6,34 +7,22 @@
 
 
 int main() {
-
-    //initialize random seed
+    // initialize random seed
     srand(time(NULL));
 
-    //initializations
-    char names[TOTAL_PLAYER_COUNT][MAX_NAME_LENGTH];
-    int playerCount;
+    // enable ANSI colors (Windows/Linux/Mac safe)
     enableColors();
 
-    printf("Basketball Simulation Starting...\n");
+    printf(COLOR_HEADER "Welcome to the NBA Simulation!\n" COLOR_RESET);
 
-    playerCount = loadPlayerNames(names, "nba_players.txt");
-    shuffleNameArray(names, TOTAL_PLAYER_COUNT);
-
-    // Initialize simulation
     Simulation sim;
-    initializeSimulation(&sim);
-    initializeAllTeams(&sim, names, &playerCount);
-    printStandings(&sim);
-    // Main game loop
-    //runSimulation(&sim);
+    int running = 1;
 
-    // Cleanup
-    //cleanupSimulation(&sim);
+    // Main menu loop
+    while (running) {
+        HandleMainMenu(&sim, &running);
+    }
 
-    printf("Basketball Simulation Ended.\n");
-    printf("Press Enter to exit...");
-    getchar();
-    //delete the cloned file
+    printf(COLOR_INFO "Thanks for playing! Exiting program...\n" COLOR_RESET);
     return 0;
 }

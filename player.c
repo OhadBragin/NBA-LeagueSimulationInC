@@ -1,132 +1,114 @@
 #include "basketball_sim.h"
+#include "colors.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
+// Initialize a player
 void initializePlayer(Player *player, const char *name) {
-    // Initialize player with name
-    // Set stats to zero
-    // TODO: Implement player initialization
-
-    strcpy(player->name, name);
-    player->gamesPlayed = 0;
+    strncpy(player->name, name, MAX_NAME_LENGTH);
+    player->name[MAX_NAME_LENGTH - 1] = '\0';
     player->points = 0;
+    player->gamesPlayed = 0;
 }
 
+// Update player stats
 void updatePlayerStats(Player *player, int points) {
-    // Update player's season statistics
-    // Increment games played
-    // Add points to total
-    // TODO: Implement player stats update
     player->points += points;
     player->gamesPlayed++;
 }
 
-void shuffleNameArray(char names[][MAX_NAME_LENGTH], int count) {
-    for (int i = count - 1; i > 0; i--) {
-        int j = getRandomNumber(0, i);
+// Print stats for one player
+void printPlayerStats(const Player *player) {
+    double ppg = (player->gamesPlayed > 0)
+                   ? (double)player->points / player->gamesPlayed
+                   : 0.0;
 
-        if (i != j) {
-            //swap names[i], names[j]
-            char temp[MAX_NAME_LENGTH];
-            strcpy(temp, names[i]);
-            strcpy(names[i], names[j]);
-            strcpy(names[j], temp);
-        }
-
-    }
+    printf("%s%-20s%s | %sPoints:%s %d | %sPPG:%s %.1f\n",
+           COLOR_PLAYER, player->name, COLOR_RESET,
+           COLOR_STAT_LABEL, COLOR_RESET, player->points,
+           COLOR_STAT_LABEL, COLOR_RESET, ppg);
 }
 
-//load players from file to array
-//return the count of players loaded
-
-int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    if (fptr == NULL) {
-        printf("Error opening %s file!\n", filename);
-        exit(1);
-    }
-
-    char buffer[MAX_NAME_LENGTH];
-    int count = 0;
-
-    while (fgets(buffer, MAX_NAME_LENGTH, fptr) && count < TOTAL_PLAYER_COUNT) {
-        // Remove newline character if present
-        buffer[strcspn(buffer, "\n")] = '\0';
-        buffer[strcspn(buffer, "\r")] = '\0';  // Also remove carriage return
-
-        // Only add non-empty names
-        if (strlen(buffer) > 0) {
-            strcpy(names[count], buffer);
-            names[count][MAX_NAME_LENGTH - 1] = '\0';  // Ensure null termination
-            count++;
-        }
-    }
-    fclose(fptr);
-
-    return count;
-}
-
-// Create a roster by picking players from the name pool
-// The namePool and playerCount are modified (players removed)
-void createRoster(Player roster[], char names[][MAX_NAME_LENGTH], int *playerCount) {
-    //check if there are enough players
-    if (*playerCount < MAX_PLAYERS) {
-        printf("Not Enough Players!");
-        exit(1);
-    }
-    //create the roster
-
-    if (roster == NULL) {
-        printf("Error allocating memory for roster\n");
-        exit(1);
-    }
+// Helper: find the player with the highest PPG
+int findHighestPPG(Player roster[MAX_PLAYERS]) {
+    int bestIndex = 0;
+    double bestPPG = -1.0;
 
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        (*playerCount)--;
-        initializePlayer(&roster[i], names[*playerCount]);
+        double ppg = (roster[i].gamesPlayed > 0)
+                       ? (double)roster[i].points / roster[i].gamesPlayed
+                       : 0.0;
+        if (ppg > bestPPG) {
+            bestPPG = ppg;
+            bestIndex = i;
+        }
     }
+    return bestIndex;
 }
 
-void freeRoster(Player *roster) {
-    if (roster != NULL) {
-        free(roster);
-    }
-}
-
+// Print roster
 void printRoster(const Player *roster) {
-    printf("\n");
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
     printf("%s%s            ROSTER%s\n", COLOR_BOLD, COLOR_HEADER, COLOR_RESET);
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
 
-    // Find top scorer (by PPG)
-    int topIndex = findHighestPPG(roster);
+    int topIndex = findHighestPPG((Player *)roster);
 
-    // Print each player
     for (int i = 0; i < MAX_PLAYERS; i++) {
-        if (roster[i].name[0] == '\0') continue;
-
-        double ppg = roster[i].gamesPlayed > 0
-                     ? (double)roster[i].points / roster[i].gamesPlayed
-                     : 0.0;
-
-        // Top scorer in green, others in white
         const char *nameColor = (i == topIndex) ? COLOR_SUCCESS : COLOR_PLAYER;
+        double ppg = (roster[i].gamesPlayed > 0)
+                       ? (double)roster[i].points / roster[i].gamesPlayed
+                       : 0.0;
 
-        printf(" %s%2d.%s %s%-20s%s  %sPoints:%s %s%4d%s  %sGames:%s %s%3d%s  %sPPG:%s %s%4.1f%s\n",
-               COLOR_NUMBER, i + 1, COLOR_RESET,       // player index
-               nameColor, roster[i].name, COLOR_RESET, // player name
-               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, roster[i].points, COLOR_RESET,  // points
-               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, roster[i].gamesPlayed, COLOR_RESET, // games
-               COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, ppg, COLOR_RESET); // ppg
+        printf("%s#%d%s %s%-20s%s | %sPoints:%s %s%d%s | %sPPG:%s %.1f\n",
+               COLOR_NUMBER, i + 1, COLOR_RESET,
+               nameColor, roster[i].name, COLOR_RESET,
+               COLOR_STAT_LABEL, COLOR_RESET,
+               COLOR_NUMBER, roster[i].points, COLOR_RESET,
+               COLOR_STAT_LABEL, COLOR_RESET, ppg);
     }
-
-    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
-    printf("\n");
 }
 
+// Shuffle players
+void shuffleNameArray(char names[][MAX_NAME_LENGTH], int count) {
+    for (int i = count - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        char tmp[MAX_NAME_LENGTH];
+        strcpy(tmp, names[i]);
+        strcpy(names[i], names[j]);
+        strcpy(names[j], tmp);
+    }
+}
 
+// Load names from file
+int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName) {
+    FILE *file = fopen(fileName, "r");
+    if (!file) {
+        perror("Error opening player names file");
+        return 0;
+    }
 
-void printPlayerStats(const Player *player) {
-    // Print player name and statistics
-    // Show points per game average
-    // TODO: Implement player stats display
+    int count = 0;
+    while (count < TOTAL_PLAYER_COUNT && fgets(names[count], MAX_NAME_LENGTH, file)) {
+        names[count][strcspn(names[count], "\n")] = '\0';
+        count++;
+    }
+
+    fclose(file);
+    return count;
+}
+
+// Create a roster for a team
+void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCount) {
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        if (*playerCount <= 0) break;
+        initializePlayer(&roster[i], names[--(*playerCount)]);
+    }
+}
+
+// Free roster (placeholder)
+void freeRoster(Player *roster) {
+    (void)roster; // no dynamic allocation inside Player
 }

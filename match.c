@@ -1,48 +1,34 @@
 #include "basketball_sim.h"
+#include "colors.h"
+#include <stdio.h>
+#include <stdlib.h>
+
 #define BASE_TEAM_SCORE 100        // Average team score
 #define SCORE_VARIANCE 20          // How much PR affects score (+/-)
 #define RANDOMNESS_RANGE 12        // Random variation (+/-)
 #define MIN_TEAM_SCORE 75          // Minimum realistic score
 #define MAX_TEAM_SCORE 170         // Maximum realistic score
 
-Match* createMatch() {
-    Match* match = (Match *)malloc(sizeof(Match));
-    if (match == NULL) {
-        printf("Failed to allocate memory for match.\n");
-        exit(1);
-    }
-    match->teamA = (Team *)malloc(sizeof(Team));
-    match->teamB = (Team *)malloc(sizeof(Team));
-    if (match->teamA == NULL || match->teamB == NULL) {
-        printf("Failed to allocate memory for team.\n");
-        exit(1);
-    }
-    return match;
-}
-
+// Initialize a match between two teams
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage) {
-    // Set up match between two teams
-    // Set game stage (regular/playoffs/finals)
-    // Initialize scores to zero
-    // TODO: Implement match initialization
     match->teamA = teamA;
     match->teamB = teamB;
-    match->stage = stage;
     match->scoreA = 0;
     match->scoreB = 0;
-    match->day = -1;
-
+    match->stage = stage; // 0 = Regular, 1 = Playoffs, 2 = Finals
 }
 
+// Dynamic K-factor based on stage
 int getK(Match *match) {
     switch (match->stage) {
-        case 0: return 24; //regular season
-        case 1: return 32; //playoffs
-        case 2: return 50; //finals
-        default: return 0; //invalid stage
+        case 0: return 24; // Regular season
+        case 1: return 32; // Playoffs
+        case 2: return 50; // Finals
+        default: return 24;
     }
 }
 
+// Calculate game scores based on power rankings and winner
 void calculateGameScores(Match *m, int teamAWins) {
     int extraLead;
     int ratingDiff;
@@ -80,34 +66,42 @@ void calculateGameScores(Match *m, int teamAWins) {
         m->scoreA = baseScoreA;
         m->scoreB = baseScoreB;
     }
-
-
 }
 
+// Simulate a match between two teams
 void simulateMatch(Match *match) {
-    // Simulate the basketball game
-    // Calculate scores based on team strength
-    // Update team and player statistics
-    // TODO: Implement match simulation logic
-    //init vars
-    int scoreA;
-    int scoreB;
+    // Probabilities
+    double probA = calculateProbability(match->teamA->PR, match->teamB->PR);
+    int teamAWins = calculateOutcomeByPercentage(probA);
 
-    //get probability
-    const double aWinProb = calculateProbability(match->teamA->PR, match->teamB->PR);
-    const int aWin = calculateOutcomeByPercentage(aWinProb);
-    const int K = getK(match);
-    calculatePowerRanking(match->teamA, match->teamB, aWinProb,  K, !aWin);
-    calculateGameScores(match, aWin);
-    updateTeamStats(match->teamA, match->scoreA, aWin);
-    updateTeamStats(match->teamB, match->scoreB, !aWin);
-    //update each player's stats
-    // --- team A ---
-   // TODO: Add player points distribution system
+    // Scores
+    calculateGameScores(match, teamAWins);
+
+    // Update team stats
+    updateTeamStats(match->teamA, match->scoreA, teamAWins);
+    updateTeamStats(match->teamB, match->scoreB, !teamAWins);
+
+    // Update power rankings
+    int winner = teamAWins ? 0 : 1;
+    double probB = 1.0 - probA;
+    int K = getK(match);
+    calculatePowerRanking(match->teamA, match->teamB, probA, probB, K, winner);
+
+    // Distribute player stats
+    int pointsA = match->scoreA;
+    int pointsB = match->scoreB;
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        int shareA = pointsA / MAX_PLAYERS + getRandomNumber(-2, 2);
+        int shareB = pointsB / MAX_PLAYERS + getRandomNumber(-2, 2);
+        if (shareA < 0) shareA = 0;
+        if (shareB < 0) shareB = 0;
+
+        updatePlayerStats(&match->teamA->roster[i], shareA);
+        updatePlayerStats(&match->teamB->roster[i], shareB);
+    }
 }
 
-
-
+// Print match result with detailed formatting
 void printMatchResult(const Match *match) {
     // Determine stage name and color
     const char *stageName;

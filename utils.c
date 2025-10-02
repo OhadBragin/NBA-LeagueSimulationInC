@@ -71,3 +71,8 @@ int getUserChoice(int min, int max) {
     return input;
 
 }
+
+void pressEnterToContinue(void) {
+    printf("Press Enter to continue...");
+    while (getchar() != '\n'); // wait for enter
+}
