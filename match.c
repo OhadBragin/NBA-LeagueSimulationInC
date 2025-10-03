@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BASE_TEAM_SCORE 100        // Average team score
-#define SCORE_VARIANCE 20          // How much PR affects score (+/-)
-#define RANDOMNESS_RANGE 12        // Random variation (+/-)
-#define MIN_TEAM_SCORE 75          // Minimum realistic score
-#define MAX_TEAM_SCORE 170         // Maximum realistic score
-
+#define BASE_TEAM_SCORE 114        // Average team score
+#define SCORE_VARIANCE 20          // How much PR affects score (+/-) the lower this number, the more variance
+#define RANDOMNESS_RANGE 10        // Random variation (+/-)
+#define MIN_TEAM_SCORE 85          // Minimum realistic score
+#define MAX_TEAM_SCORE 155         // Maximum realistic score
+#define RANDOM_POWRESS_NOISE 5     // How much a player's prowess can vary per game (+/-)
 // Initialize a match between two teams
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage) {
     match->teamA = teamA;
@@ -21,10 +21,10 @@ void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage) {
 // Dynamic K-factor based on stage
 int getK(Match *match) {
     switch (match->stage) {
-        case 0: return 24; // Regular season
-        case 1: return 32; // Playoffs
-        case 2: return 50; // Finals
-        default: return 24;
+        case 0: return 32; // Regular season (was 24)
+        case 1: return 48; // Playoffs (was 32)
+        case 2: return 64; // Finals (was 50)
+        default: return 32;
     }
 }
 
@@ -34,8 +34,8 @@ void calculateGameScores(Match *m, int teamAWins) {
     int ratingDiff;
 
     // Calculate base scores (100 + power ranking adjustment + random noise)
-    int baseScoreA = BASE_TEAM_SCORE + ((m->teamA->PR - 1500) / 25) + getRandomNumber(-RANDOMNESS_RANGE, RANDOMNESS_RANGE);
-    int baseScoreB = BASE_TEAM_SCORE + ((m->teamB->PR - 1500) / 25) + getRandomNumber(-RANDOMNESS_RANGE, RANDOMNESS_RANGE);
+    int baseScoreA = BASE_TEAM_SCORE + ((m->teamA->PR - 1500) / SCORE_VARIANCE) + getRandomNumber(-RANDOMNESS_RANGE, RANDOMNESS_RANGE);
+    int baseScoreB = BASE_TEAM_SCORE + ((m->teamB->PR - 1500) / SCORE_VARIANCE) + getRandomNumber(-RANDOMNESS_RANGE, RANDOMNESS_RANGE);
 
     if (teamAWins) {
         // TeamA wins
@@ -68,6 +68,53 @@ void calculateGameScores(Match *m, int teamAWins) {
     }
 }
 
+void distributePlayerPoints(Team *team, int teamScore) {
+    double adjustedProwess[MAX_PLAYERS];
+    int finalPoints[MAX_PLAYERS] = {0}; // array to store final points
+    double totalAdjustedProwess = 0.0;
+    int highestProwessIdx = 0; // Keep track of the best player
+
+    // Calculate each player's prowess with random noise and find who's having the best game.
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        double noise = (double)getRandomNumber(-RANDOM_POWRESS_NOISE, RANDOM_POWRESS_NOISE);
+        double gameProwess = team->roster[i].scoringProwess + noise;
+
+        if (gameProwess < 1.0) {
+            gameProwess = 1.0;
+        }
+
+        adjustedProwess[i] = gameProwess;
+        totalAdjustedProwess += gameProwess;
+
+        // Check if this player has the highest prowess
+        if (adjustedProwess[i] > adjustedProwess[highestProwessIdx]) {
+            highestProwessIdx = i;
+        }
+    }
+
+    // Calculate each player's initial share of points.
+    int totalPointsAssigned = 0;
+    if (totalAdjustedProwess > 0) {
+        for (int i = 0; i < MAX_PLAYERS; i++) {
+            double percentage = adjustedProwess[i] / totalAdjustedProwess;
+            int points = (int)(teamScore * percentage);
+            finalPoints[i] = points;
+            totalPointsAssigned += points;
+        }
+    }
+
+    // Step 3: Give any leftover points to a random player to ensure total matches team score.
+    int remainder = teamScore - totalPointsAssigned;
+    if (remainder > 0) {
+        finalPoints[getRandomNumber(0,4)] += remainder;
+    }
+
+    // Step 4: Update all player stats
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        updatePlayerStats(&team->roster[i], finalPoints[i]);
+    }
+}
+
 // Simulate a match between two teams
 void simulateMatch(Match *match) {
     // Probabilities
@@ -88,17 +135,8 @@ void simulateMatch(Match *match) {
     calculatePowerRanking(match->teamA, match->teamB, probA, probB, K, winner);
 
     // Distribute player stats
-    int pointsA = match->scoreA;
-    int pointsB = match->scoreB;
-    for (int i = 0; i < MAX_PLAYERS; i++) {
-        int shareA = pointsA / MAX_PLAYERS + getRandomNumber(-2, 2);
-        int shareB = pointsB / MAX_PLAYERS + getRandomNumber(-2, 2);
-        if (shareA < 0) shareA = 0;
-        if (shareB < 0) shareB = 0;
-
-        updatePlayerStats(&match->teamA->roster[i], shareA);
-        updatePlayerStats(&match->teamB->roster[i], shareB);
-    }
+    distributePlayerPoints(match->teamA, match->scoreA);
+    distributePlayerPoints(match->teamB, match->scoreB);
 }
 
 // Print match result with detailed formatting

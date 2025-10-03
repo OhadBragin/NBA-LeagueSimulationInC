@@ -1,4 +1,5 @@
 #include "basketball_sim.h"
+#include "colors.h"
 
 
 void clearScreen() {
@@ -53,7 +54,7 @@ int calculateOutcomeByPercentage(double p){
 }
 
 double calculateProbability(int prA, int prB) {
-    return  1.0 / (1 + pow(10, (prA - prB) / 400.0));
+    return 1.0 / (1.0 + pow(10, (double)(prB - prA) / 400.0));
 
 }
 
@@ -65,9 +66,15 @@ int getUserChoice(int min, int max) {
     // Handle invalid input gracefully
     // TODO: Implement user input validation
     int input;
-    do {
+    //validate input
+    while (1) {
         scanf("%d", &input);
-    }while (!(input >= min && input <= max));
+        if (input >= min && input <= max) {
+            break;
+        }
+        printf(COLOR_ERROR "Invalid input. Please enter a number between %d and %d.\n", min, max);
+        printf(COLOR_RESET);
+    }
     return input;
 
 }

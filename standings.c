@@ -53,7 +53,7 @@ void printConferenceStandings(const Simulation *sim, int conference) {
 
     // Print table header
     printf("\n  Rank %-25s %-10s %-6s %-6s\n",
-           "Team", "Record", "PR", "Pts");
+           "Team", "Record", "PR", "PPG");
     printf("-------------------------------------------------------------\n");
 
     // Print teams

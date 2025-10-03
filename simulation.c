@@ -56,8 +56,9 @@ void runSimulation(Simulation *sim, int duration) {
         // Count today's games
         sim->gamesToday = countTodaysGames(sim);
 
-        // Print today's schedule
-        printTodaysGames(sim);
+        if (duration == 1)
+            // Print today's schedule
+            printTodaysGames(sim);
 
         // Simulate today's games
         int gamesPlayed = 0;
@@ -66,16 +67,14 @@ void runSimulation(Simulation *sim, int duration) {
             if (curr->day == sim->currentDay) {
                 Match *match = &curr->m;
                 simulateMatch(match);
-                printMatchResult(match);
+                if (duration == 1)
+                    printMatchResult(match);
                 gamesPlayed++;
             }
             curr = curr->next;
         }
 
-        // Small pause between days
-        if (d < daysToRun - 1 && sim->gamesToday > 0) {
-            sleep_ms(300);
-        }
+
 
         // Advance day
         advanceDay(sim);

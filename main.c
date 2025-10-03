@@ -10,7 +10,7 @@ int main() {
     // initialize random seed
     srand(time(NULL));
 
-    // enable ANSI colors (Windows/Linux/Mac safe)
+    // enable ANSI colors
     enableColors();
 
     printf(COLOR_HEADER "Welcome to the NBA Simulation!\n" COLOR_RESET);

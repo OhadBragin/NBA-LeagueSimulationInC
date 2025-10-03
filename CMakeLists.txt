@@ -12,4 +12,5 @@ add_executable(NBA_SIM main.c
         standings.c
         utils.c
         file_io.c
-        basketball_sim.h)
+        basketball_sim.h
+        ui.c)

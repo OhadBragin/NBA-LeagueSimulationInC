@@ -47,6 +47,7 @@ typedef struct Player {
     char name[MAX_NAME_LENGTH];
     int points;       // total points scored in the current season
     int gamesPlayed;  // total games played this season
+    double scoringProwess; // scoring power
 } Player;
 
 // --- team ---

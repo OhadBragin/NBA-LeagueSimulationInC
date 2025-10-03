@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 
+#define TOTAL_POWRESS 100
 // Initialize a player
 void initializePlayer(Player *player, const char *name) {
     strncpy(player->name, name, MAX_NAME_LENGTH);
@@ -69,6 +70,7 @@ void printRoster(const Player *roster) {
                COLOR_NUMBER, roster[i].points, COLOR_RESET,
                COLOR_STAT_LABEL, COLOR_RESET, ppg);
     }
+    printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
 }
 
 // Shuffle players
@@ -106,6 +108,42 @@ void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCoun
         if (*playerCount <= 0) break;
         initializePlayer(&roster[i], names[--(*playerCount)]);
     }
+    // assign scoring prowess
+    int powressPool = TOTAL_POWRESS;
+    //team archetype
+    int num = getRandomNumber(1, 100);
+    int idx = getRandomNumber(0, 4);
+    // --- Archetype Selection ---
+
+    if (num <= 15) { // 15% chance: Superstar Team
+        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.40;
+        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.22;
+        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.16;
+        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.12;
+        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.10;
+
+    } else if (num <= 35) { // 20% chance: "Big Two" Team
+        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.33;
+        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.30;
+        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.16;
+        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.11;
+        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.10;
+
+    } else if (num <= 80) { // 45% chance: Balanced Team
+        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.30;
+        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.24;
+        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.18;
+        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.15;
+        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.13;
+
+    } else { // 20% chance: "Depth" Team
+        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.23;
+        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.21;
+        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.20;
+        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.19;
+        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.17;
+    }
+
 }
 
 // Free roster (placeholder)
