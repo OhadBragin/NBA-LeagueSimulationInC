@@ -62,21 +62,18 @@ double calculateProbability(int prA, int prB) {
 
 
 int getUserChoice(int min, int max) {
-    // Get valid user input within range
-    // Handle invalid input gracefully
-    // TODO: Implement user input validation
     int input;
-    //validate input
     while (1) {
-        scanf("%d", &input);
-        if (input >= min && input <= max) {
+        printf("Enter your choice: ");
+        if (scanf("%d", &input) == 1 && input >= min && input <= max) {
+            clearInputBuffer(); // Clear the rest of the line
             break;
+        } else {
+            printf(COLOR_ERROR "Invalid input. Please enter a number between %d and %d.\n" COLOR_RESET, min, max);
+            clearInputBuffer(); // Clear the invalid input
         }
-        printf(COLOR_ERROR "Invalid input. Please enter a number between %d and %d.\n", min, max);
-        printf(COLOR_RESET);
     }
     return input;
-
 }
 
 void pressEnterToContinue(void) {
