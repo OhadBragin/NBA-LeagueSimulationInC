@@ -146,30 +146,30 @@ char* selectSaveFile() {
 
     printf(COLOR_HEADER "\n=== Load a Past Season ===\n" COLOR_RESET);
 
-#ifdef _WIN32
-    WIN32_FIND_DATA fd;
-    HANDLE hFind = FindFirstFile("saves\\*.sav", &fd);
-    if (hFind != INVALID_HANDLE_VALUE) {
-        do {
-            if (count < 256) {
-                filenames[count++] = _strdup(fd.cFileName);
-            }
-        } while (FindNextFile(hFind, &fd) != 0);
-        FindClose(hFind);
-    }
-#else
-    DIR *d;
-    struct dirent *dir;
-    d = opendir("saves");
-    if (d) {
-        while ((dir = readdir(d)) != NULL) {
-            if (strstr(dir->d_name, ".sav") && count < 256) {
-                filenames[count++] = strdup(dir->d_name);
-            }
+    #ifdef _WIN32
+        WIN32_FIND_DATA fd;
+        HANDLE hFind = FindFirstFile("saves\\*.sav", &fd);
+        if (hFind != INVALID_HANDLE_VALUE) {
+            do {
+                if (count < 256) {
+                    filenames[count++] = _strdup(fd.cFileName);
+                }
+            } while (FindNextFile(hFind, &fd) != 0);
+            FindClose(hFind);
         }
-        closedir(d);
-    }
-#endif
+    #else
+        DIR *d;
+        struct dirent *dir;
+        d = opendir("saves");
+        if (d) {
+            while ((dir = readdir(d)) != NULL) {
+                if (strstr(dir->d_name, ".sav") && count < 256) {
+                    filenames[count++] = strdup(dir->d_name);
+                }
+            }
+            closedir(d);
+        }
+    #endif
 
     if (count == 0) {
         printf(COLOR_WARNING "No saved seasons found in the 'saves' directory.\n" COLOR_RESET);

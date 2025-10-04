@@ -53,12 +53,15 @@ static void simulatePlayoffGame(Match *match, int isHomeGameForA) {
     // Simulate the game
     simulateMatch(match);
 
+    int teamAWon = match->scoreA > match->scoreB;
     // Restore original PR (the match already updated them, so adjust back)
-    if (isHomeGameForA) {
-        match->teamA->PR -= 50;
-    } else {
-        match->teamB->PR -= 50;
-    }
+    match->teamA->PR = originalPR_A;
+    match->teamB->PR = originalPR_B;
+    double originalProbA = calculateProbability(originalPR_A, originalPR_B);
+    double originalProbB = 1.0 - originalProbA;
+    int winnerIndex = teamAWon ? 0 : 1;
+    int K = getK(match);
+    calculatePowerRanking(match->teamA, match->teamB, originalProbA, originalProbB, K, winnerIndex);
 }
 
 // Simulate best-of-7 series

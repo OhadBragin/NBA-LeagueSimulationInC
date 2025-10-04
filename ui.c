@@ -114,8 +114,9 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
     while (endMenuRunning) {
         printf(COLOR_HEADER "\n=== %d-%d Season Complete Menu ===\n" COLOR_RESET, sim->year, sim->year + 1);
         printf("1. View Final Standings\n");
-        printf("2. Start Playoffs\n");
-        printf("3. View Season Summary\n");
+        printf("2. View Team Roster\n");
+        printf("3. Start Playoffs\n");
+        printf("4. View Season Summary\n");
         printf("0. Save and Return to Main Menu\n");
         printf(COLOR_HEADER "==================================\n" COLOR_RESET);
 
@@ -127,6 +128,9 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 pressEnterToContinue();
                 break;
             case 2:
+                viewTeamRoster(sim);
+                break;
+            case 3:
                 if (sim->playoffsComplete) {
                     printf(COLOR_WARNING "\nPlayoffs already completed!\n" COLOR_RESET);
                 } else {
@@ -135,7 +139,7 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 }
                 pressEnterToContinue();
                 break;
-            case 3:
+            case 4:
                 if (sim->playoffsComplete) {
                     printSeasonSummary(sim);
                 } else {
@@ -183,13 +187,11 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
             break;
         }
         case 2:
-            clearConsole();
             printStandings(sim);
             pressEnterToContinue();
             break;
 
         case 3:
-            clearConsole();
             viewTeamRoster(sim);
             break;
 
@@ -200,7 +202,6 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
                 pressEnterToContinue();
             }
             printf(COLOR_WARNING "Ending current simulation...\n" COLOR_RESET);
-            clearConsole();
             break;
     }
 }
@@ -208,6 +209,7 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
 // Handle main menu
 void HandleMainMenu(Simulation *sim, int *running) {
     while (*running) {
+        clearConsole();
         PrintMainMenu();
         int choice = getUserChoice(0, 3);
 
@@ -217,7 +219,7 @@ void HandleMainMenu(Simulation *sim, int *running) {
                 printf(COLOR_SUCCESS "Starting %d-%d simulation...\n" COLOR_RESET, year, year + 1);
 
                 char names[TOTAL_PLAYER_COUNT][MAX_NAME_LENGTH];
-                int playerCount = loadPlayerNames(names, "nba_players.txt");
+                 int playerCount = loadPlayerNames(names, "nba_players.txt");
                 if (playerCount == 0) {
                      printf(COLOR_ERROR "Could not load player names. Make sure 'nba_players.txt' is in the same directory. Exiting.\n" COLOR_RESET);
                      *running = 0;
@@ -247,6 +249,7 @@ void HandleMainMenu(Simulation *sim, int *running) {
                 char *filename = selectSaveFile();
                 if (filename) {
                     if (loadSimulation(sim, filename)) {
+                        clearConsole();
                         HandleLoadedSeasonMenu(sim);
                     }
                     free(filename);

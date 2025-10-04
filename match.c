@@ -112,7 +112,10 @@ void distributePlayerPoints(Team *team, int teamScore) {
     // Step 3: Give any leftover points to a random player to ensure total matches team score.
     int remainder = teamScore - totalPointsAssigned;
     if (remainder > 0) {
-        finalPoints[getRandomNumber(0,4)] += remainder;
+        finalPoints[getRandomNumber(0,MAX_PLAYERS)] += remainder;
+    }
+    else if (remainder < 0) {
+        finalPoints[highestProwessIdx] += remainder;
     }
 
     // Step 4: Update all player stats

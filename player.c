@@ -63,12 +63,13 @@ void printRoster(const Player *roster) {
                        ? (double)roster[i].points / roster[i].gamesPlayed
                        : 0.0;
 
-        printf("%s#%d%s %s%-20s%s | %sGames:%s %s%d%s | %sPPG:%s %.1f\n",
-               COLOR_NUMBER, i + 1, COLOR_RESET,
-               nameColor, roster[i].name, COLOR_RESET,
-               COLOR_STAT_LABEL, COLOR_RESET,
-               COLOR_NUMBER, roster[i].gamesPlayed, COLOR_RESET,
-               COLOR_STAT_LABEL, COLOR_RESET, ppg);
+        printf("%.*s#%d%s %s%-*.*s%s | %sGames:%s %s%d%s | %sPPG:%s %.1f\n",
+            MAX_NAME_LENGTH,
+            COLOR_NUMBER, i + 1, COLOR_RESET,
+            nameColor, MAX_NAME_LENGTH, MAX_NAME_LENGTH, roster[i].name, COLOR_RESET,
+            COLOR_STAT_LABEL, COLOR_RESET,
+            COLOR_NUMBER, roster[i].gamesPlayed, COLOR_RESET,
+            COLOR_STAT_LABEL, COLOR_RESET, ppg);
     }
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
 }

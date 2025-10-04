@@ -73,53 +73,41 @@ void factoryReset() {
 
 // Get the next season year from file, or create the file if it doesn't exist
 int getNextSeasonYear() {
-    FILE *fptr;
-    int year;
+    FILE *file;
+    int lastCompletedYear;
+    const char *filename = "data/season_year.txt";
+
+    // Ensure the 'data' directory exists.
     #ifdef _WIN32
         _mkdir("data");
     #else
-        // On Linux/macOS, mkdir requires permissions. 0777 gives full access.
         mkdir("data", 0777);
     #endif
 
-    const char *filename = "data/season_year.txt";
-
-    fptr = fopen(filename, "r");
-    if (fptr == NULL) {
-        // File doesn't exist, so create it with the current year
+    file = fopen(filename, "r");
+    if (file == NULL) {
+        // File doesn't exist, this is the first ever run.
         time_t t = time(NULL);
         struct tm *tm = localtime(&t);
-        year = tm->tm_year + 1900; // Get current year
+        lastCompletedYear = tm->tm_year + 1900 - 1; // e.g., 2024
 
-        fptr = fopen(filename, "w");
-        if (fptr == NULL) {
-            // This should now only fail if there are disk space or permission issues.
-            perror("FATAL ERROR: Could not create season tracking file");
-            pressEnterToContinue();
-            exit(1);
+        // Create the file so it's there for next time.
+        file = fopen(filename, "w");
+        if (file) {
+            fprintf(file, "%d", lastCompletedYear);
+            fclose(file);
         }
-        fprintf(fptr, "%d", year);
-        fclose(fptr);
-        return year;
+        // The new season will be the current year.
+        return lastCompletedYear + 1;
     }
-
-    // File exists, so read the year, increment it, and write it back
-    if (fscanf(fptr, "%d", &year) != 1) {
-        fprintf(stderr, "FATAL ERROR: Could not read from season year file. It may be corrupted.\n");
-        pressEnterToContinue();
-        exit(1);
-    }
-    fclose(fptr);
-
-    year++; // Increment for the next season
-
-    fptr = fopen(filename, "w");
-    if (fptr == NULL) {
-        perror("FATAL ERROR: Could not update season tracking file");
-        exit(1);
-    }
-    fprintf(fptr, "%d", year);
-    fclose(fptr);
-    return year;
+        // File exists, read the last completed year.
+        if (fscanf(file, "%d", &lastCompletedYear) != 1) {
+            fprintf(stderr, "Error reading from season year file. Using default year.\n");
+            fclose(file);
+            return 2025; // Fallback
+        }
+        fclose(file);
+        // The new season is the year after the last completed one.
+        return lastCompletedYear + 1;
 }
 
