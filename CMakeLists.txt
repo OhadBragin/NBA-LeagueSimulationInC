@@ -13,4 +13,6 @@ add_executable(NBA_SIM main.c
         utils.c
         file_io.c
         basketball_sim.h
-        ui.c)
+        ui.c
+        playoffs.c
+        playoffs.c)

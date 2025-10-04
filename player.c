@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
-#define TOTAL_POWRESS 100
 // Initialize a player
 void initializePlayer(Player *player, const char *name) {
     strncpy(player->name, name, MAX_NAME_LENGTH);
@@ -63,11 +63,11 @@ void printRoster(const Player *roster) {
                        ? (double)roster[i].points / roster[i].gamesPlayed
                        : 0.0;
 
-        printf("%s#%d%s %s%-20s%s | %sPoints:%s %s%d%s | %sPPG:%s %.1f\n",
+        printf("%s#%d%s %s%-20s%s | %sGames:%s %s%d%s | %sPPG:%s %.1f\n",
                COLOR_NUMBER, i + 1, COLOR_RESET,
                nameColor, roster[i].name, COLOR_RESET,
                COLOR_STAT_LABEL, COLOR_RESET,
-               COLOR_NUMBER, roster[i].points, COLOR_RESET,
+               COLOR_NUMBER, roster[i].gamesPlayed, COLOR_RESET,
                COLOR_STAT_LABEL, COLOR_RESET, ppg);
     }
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
@@ -102,6 +102,38 @@ int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName) {
     return count;
 }
 
+void assignProwessByDecay(Player *roster, double decayFactor) {
+    double rawShares[MAX_PLAYERS];
+    double totalRawShares = 0.0;
+
+    // Generate the shares using a power curve
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        rawShares[i] = pow(decayFactor, i);
+        totalRawShares += rawShares[i];
+    }
+
+    // Create the final prowess values by normalizing the shares
+    double finalProwessValues[MAX_PLAYERS];
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        double percentage = rawShares[i] / totalRawShares;
+        finalProwessValues[i] = TOTAL_POWRESS * percentage;
+    }
+
+    // Shuffle the generated prowess values
+    for (int i = MAX_PLAYERS - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        double temp = finalProwessValues[i];
+        finalProwessValues[i] = finalProwessValues[j];
+        finalProwessValues[j] = temp;
+    }
+
+    // assign the shuffled values to the roster
+    for (int i = 0; i < MAX_PLAYERS; i++) {
+        // This line ensures each player gets their unique prowess value.
+        roster[i].scoringProwess = finalProwessValues[i];
+    }
+}
+
 // Create a roster for a team
 void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCount) {
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -112,38 +144,17 @@ void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCoun
     int powressPool = TOTAL_POWRESS;
     //team archetype
     int num = getRandomNumber(1, 100);
-    int idx = getRandomNumber(0, 4);
+    double decayFactor;
     // --- Archetype Selection ---
 
-    if (num <= 15) { // 15% chance: Superstar Team
-        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.40;
-        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.22;
-        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.16;
-        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.12;
-        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.10;
-
-    } else if (num <= 35) { // 20% chance: "Big Two" Team
-        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.33;
-        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.30;
-        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.16;
-        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.11;
-        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.10;
-
-    } else if (num <= 80) { // 45% chance: Balanced Team
-        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.30;
-        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.24;
-        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.18;
-        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.15;
-        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.13;
-
-    } else { // 20% chance: "Depth" Team
-        roster[idx % 5].scoringProwess = TOTAL_POWRESS * 0.23;
-        roster[(idx + 1) % 5].scoringProwess = TOTAL_POWRESS * 0.21;
-        roster[(idx + 2) % 5].scoringProwess = TOTAL_POWRESS * 0.20;
-        roster[(idx + 3) % 5].scoringProwess = TOTAL_POWRESS * 0.19;
-        roster[(idx + 4) % 5].scoringProwess = TOTAL_POWRESS * 0.17;
+    if (num <= 15) { // 15% chance: super-star team
+        decayFactor = 0.75;
+    } else if (num <= 80) { // 65% chance: Balanced team
+        decayFactor = 0.85;
+    } else { // 20% chance: Depth team
+        decayFactor = 0.95;
     }
-
+    assignProwessByDecay(roster, decayFactor);
 }
 
 // Free roster (placeholder)

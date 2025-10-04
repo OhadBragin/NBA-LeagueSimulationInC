@@ -2,11 +2,11 @@
 #include "colors.h"
 
 
-void clearScreen() {
+void clearConsole() {
     // Clear stdin buffer for clean input
     // TODO: Implement input buffer clearing
     #ifdef _WIN32
-        system("cls");   // Windows
+        //system("cls");   // Windows
     #else
         system("clear"); // macOS / Linux
     #endif

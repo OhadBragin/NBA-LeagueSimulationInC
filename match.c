@@ -28,6 +28,12 @@ int getK(Match *match) {
     }
 }
 
+int clamp(int val, int min, int max) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
+
 // Calculate game scores based on power rankings and winner
 void calculateGameScores(Match *m, int teamAWins) {
     int extraLead;
@@ -49,8 +55,8 @@ void calculateGameScores(Match *m, int teamAWins) {
             extraLead = ratingDiff / 50; // Bigger rating difference = bigger lead
             baseScoreA += extraLead;
         }
-        m->scoreA = baseScoreA;
-        m->scoreB = baseScoreB;
+        m->scoreA = clamp(baseScoreA, MIN_TEAM_SCORE, MAX_TEAM_SCORE);
+        m->scoreB = clamp(baseScoreB, MIN_TEAM_SCORE, MAX_TEAM_SCORE);
     } else {
         // TeamB wins
         if (baseScoreB <= baseScoreA) {
@@ -63,8 +69,8 @@ void calculateGameScores(Match *m, int teamAWins) {
             extraLead = ratingDiff / 50; // Bigger rating difference = bigger lead
             baseScoreB += extraLead;
         }
-        m->scoreA = baseScoreA;
-        m->scoreB = baseScoreB;
+        m->scoreA = clamp(baseScoreA, MIN_TEAM_SCORE, MAX_TEAM_SCORE);
+        m->scoreB = clamp(baseScoreB, MIN_TEAM_SCORE, MAX_TEAM_SCORE);
     }
 }
 

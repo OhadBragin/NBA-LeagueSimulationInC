@@ -176,6 +176,7 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
             runSimulation(sim, duration);
 
             // Show standings after simulation
+            clearConsole();
             printStandings(sim);
 
             // Check if season ended
@@ -189,17 +190,20 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
         }
 
         case 2: // View standings
+            clearConsole();
             printStandings(sim);
             pressEnterToContinue();
             break;
 
         case 3: // View team roster
+            clearConsole();
             viewTeamRoster(sim);
             break;
 
         case 0: // End simulation
             *simRunning = 0;
             printf(COLOR_WARNING "Ending simulation...\n" COLOR_RESET);
+            clearConsole();
             break;
 
         default:
@@ -216,7 +220,6 @@ void HandleMainMenu(Simulation *sim, int *running) {
     switch (choice) {
         case 1: { // Start new simulation
             printf(COLOR_SUCCESS "Starting new simulation...\n" COLOR_RESET);
-
             char names[TOTAL_PLAYER_COUNT][MAX_NAME_LENGTH];
             int playerCount = loadPlayerNames(names, "nba_players.txt");
             shuffleNameArray(names, playerCount);
@@ -226,7 +229,7 @@ void HandleMainMenu(Simulation *sim, int *running) {
             generateSchedule(sim);
 
             printf(COLOR_SUCCESS "Season initialized!\n" COLOR_RESET);
-
+            clearConsole();
             printStandings(sim);
             pressEnterToContinue();
 
@@ -242,15 +245,20 @@ void HandleMainMenu(Simulation *sim, int *running) {
         case 2:
             printf(COLOR_INFO "Feature not implemented yet: View Past Simulations.\n" COLOR_RESET);
             pressEnterToContinue();
+            clearConsole();
             break;
 
         case 0:
             *running = 0;
             printf(COLOR_WARNING "Exiting NBA Simulation...\n" COLOR_RESET);
+            pressEnterToContinue();
+            clearConsole();
             break;
 
         default:
             printf(COLOR_ERROR "Invalid choice. Try again.\n" COLOR_RESET);
+            pressEnterToContinue();
+            clearConsole();
             break;
     }
 }

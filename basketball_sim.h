@@ -18,6 +18,7 @@
 #define BASE_ELO 1500
 #define TOTAL_PLAYER_COUNT 570
 #define MAX_NAME_LENGTH 30
+#define TOTAL_POWRESS 100
 
 // ==========================
 // Struct Declarations
@@ -102,7 +103,7 @@ int loadPlayerNames(char names[][MAX_NAME_LENGTH], const char *fileName);
 void createRoster(Player *roster, char names[][MAX_NAME_LENGTH], int *playerCount);
 void freeRoster(Player *roster);
 void printRoster(const Player *roster);
-
+void assignProwessByDecay(Player *roster, double decayFactor);
 // match.c
 void initializeMatch(Match *match, Team *teamA, Team *teamB, int stage);
 void simulateMatch(Match *match);
@@ -126,7 +127,8 @@ void simulatePlayoffs(Simulation *sim);
 void printSeasonSummary(Simulation *sim);
 
 // utils.c
-void clearInputBuffer(void);
+void clearConsole();
+void clearInputBuffer();
 int getRandomNumber(int min, int max);
 void pressEnterToContinue(void);
 int getUserChoice(int min, int max);
