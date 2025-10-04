@@ -18,6 +18,8 @@ void initializeSimulation(Simulation *sim) {
     sim->matchSchedule = NULL;
     sim->gamesToday = 0;
     sim->seasonComplete = 0;
+    sim->playoffsComplete = 0;
+    sim->champion = NULL;
 }
 
 // Advance simulation by one day

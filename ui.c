@@ -109,11 +109,12 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
         printf("1. View Final Standings\n");
         printf("2. View Team Roster\n");
         printf("3. View Playoff Qualifiers\n");
-        printf("4. Start Playoffs (Coming Soon)\n");
+        printf("4. Start Playoffs\n");
+        printf("5. View Season Summary\n");
         printf("0. Return to Main Menu\n");
         printf(COLOR_HEADER "============================\n" COLOR_RESET);
 
-        int choice = getUserChoice(0, 4);
+        int choice = getUserChoice(0, 5);
 
         switch (choice) {
             case 1:
@@ -128,10 +129,29 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 pressEnterToContinue();
                 break;
             case 4:
-                printf(COLOR_WARNING "\nPlayoffs feature coming soon!\n" COLOR_RESET);
-                pressEnterToContinue();
+                if (sim->playoffsComplete) {
+                    printf(COLOR_WARNING "\nPlayoffs already completed!\n" COLOR_RESET);
+                    pressEnterToContinue();
+                } else {
+                    simulatePlayoffs(sim);
+                    sim->playoffsComplete = 1;
+                }
+                break;
+            case 5:
+                if (sim->playoffsComplete) {
+                    printSeasonSummary(sim);
+                    pressEnterToContinue();
+                } else {
+                    printf(COLOR_WARNING "\nComplete playoffs first to view season summary!\n" COLOR_RESET);
+                    pressEnterToContinue();
+                }
                 break;
             case 0:
+                if (sim->playoffsComplete) {
+                    printf(COLOR_SUCCESS "\nFinal season summary:\n" COLOR_RESET);
+                    printSeasonSummary(sim);
+                    pressEnterToContinue();
+                }
                 endMenuRunning = 0;
                 *simRunning = 0;
                 break;

@@ -25,11 +25,12 @@
 
 // Forward declare Team so Match can use it
 struct Team;
+typedef struct Team Team;
 
 // --- match ---
 typedef struct Match {
-    struct Team *teamA;
-    struct Team *teamB;
+    Team *teamA;
+    Team *teamB;
     int scoreA;
     int scoreB;
     int stage; // 0 = Regular, 1 = Playoffs, 2 = Finals
@@ -51,7 +52,7 @@ typedef struct Player {
 } Player;
 
 // --- team ---
-typedef struct Team {
+struct Team {
     char *name;
     int PR;            // power-ranking (ELO)
     int wins;
@@ -59,7 +60,7 @@ typedef struct Team {
     int conference;    // 0 = East, 1 = West
     int seasonPoints;  // counter for all points scored in the current season
     Player roster[MAX_PLAYERS];
-} Team;
+};
 
 // --- simulation ---
 typedef struct Simulation {
@@ -69,6 +70,8 @@ typedef struct Simulation {
     ScheduleList *matchSchedule; // schedule of all games in the season
     int gamesToday;          // games that will be played in the current day
     int seasonComplete;
+    int playoffsComplete;
+    Team *champion;          // pointer to championship team
 } Simulation;
 
 // ==========================
@@ -117,6 +120,10 @@ int countTodaysGames(const Simulation *sim);
 void printStandings(const Simulation *sim);
 void sortTeamsByRecord(Team teams[], int count);
 void printConferenceStandings(const Simulation *sim, int conference);
+
+// playoffs.c
+void simulatePlayoffs(Simulation *sim);
+void printSeasonSummary(Simulation *sim);
 
 // utils.c
 void clearInputBuffer(void);
