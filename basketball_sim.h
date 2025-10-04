@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include "colors.h"
 
 // ==========================
 // Constants
@@ -73,6 +74,7 @@ typedef struct Simulation {
     int seasonComplete;
     int playoffsComplete;
     Team *champion;          // pointer to championship team
+    int year;
 } Simulation;
 
 // ==========================
@@ -137,9 +139,14 @@ double calculateProbability(int prA, int prB);
 void cloneFile(const char *src, const char *dest);
 
 // file_io.c
-void saveSimulation(const Simulation *sim, const char *filename);
+void saveSimulation(const Simulation *sim);
 int loadSimulation(Simulation *sim, const char *filename);
 void exportStandings(const Simulation *sim, const char *filename);
+char* selectSaveFile();
+
+// season_manager.c
+int getNextSeasonYear();
+void factoryReset();
 
 // ui.c
 void PrintMainMenu();

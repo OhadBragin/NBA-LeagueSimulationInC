@@ -15,4 +15,5 @@ add_executable(NBA_SIM main.c
         basketball_sim.h
         ui.c
         playoffs.c
-        playoffs.c)
+        playoffs.c
+        season_manager.c)

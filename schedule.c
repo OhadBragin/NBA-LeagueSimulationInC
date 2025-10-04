@@ -8,6 +8,7 @@ static ScheduleList* createScheduleNode(Team *teamA, Team *teamB, int stage, int
     ScheduleList *node = (ScheduleList *)malloc(sizeof(ScheduleList));
     if (!node) {
         printf(COLOR_ERROR "Error allocating memory for schedule node!\n" COLOR_RESET);
+        pressEnterToContinue();
         exit(1);
     }
     initializeMatch(&node->m, teamA, teamB, stage);

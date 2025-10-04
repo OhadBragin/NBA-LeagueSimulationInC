@@ -6,7 +6,7 @@ void clearConsole() {
     // Clear stdin buffer for clean input
     // TODO: Implement input buffer clearing
     #ifdef _WIN32
-        //system("cls");   // Windows
+        system("cls");   // Windows
     #else
         system("clear"); // macOS / Linux
     #endif
@@ -30,7 +30,8 @@ void cloneFile(const char *src, const char *dest) {
     FILE *fptr = fopen(src, "r");
     FILE *cloned = fopen(dest, "w");
     if (fptr == NULL || cloned == NULL) {
-        printf("Error opening file\n");
+        printf("Error opening file %s %s\n",src, dest);
+        pressEnterToContinue();
         exit(1);
     }
 

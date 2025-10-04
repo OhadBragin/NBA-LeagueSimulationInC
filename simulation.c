@@ -31,14 +31,11 @@ void advanceDay(Simulation *sim) {
     }
 }
 
-void cleanupTeams(Simulation *sim) {
-    for (int i = 0; i < TEAMS_COUNT; i++) {
-        free(sim->teams[i].name);
-    }
-}
+
 
 // Free memory at end of simulation
 void cleanupSimulation(Simulation *sim) {
+    // Free the linked list for the schedule
     ScheduleList *curr = sim->matchSchedule;
     while (curr) {
         ScheduleList *next = curr->next;
@@ -46,7 +43,15 @@ void cleanupSimulation(Simulation *sim) {
         curr = next;
     }
     sim->matchSchedule = NULL;
-    cleanupTeams(sim);
+
+    // Free the dynamically allocated names for each team
+    for (int i = 0; i < TEAMS_COUNT; i++) {
+        if (sim->teams[i].name != NULL) {
+            free(sim->teams[i].name);
+            sim->teams[i].name = NULL;
+        }
+    }
+    sim->champion = NULL;
 }
 
 // Run simulation for a chosen number of days

@@ -16,6 +16,7 @@ int main() {
     printf(COLOR_HEADER "Welcome to the NBA Simulation!\n" COLOR_RESET);
 
     Simulation sim;
+    memset(&sim, 0, sizeof(Simulation));
     int running = 1;
 
     // Main menu loop

@@ -11,6 +11,7 @@ Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LEN
     Team *team = (Team *)malloc(sizeof(Team));
     if (!team) {
         printf("Error allocating memory for team\n");
+        pressEnterToContinue();
         exit(1);
     }
 
@@ -18,6 +19,7 @@ Team* initializeTeam(const char *name, int conference, char names[][MAX_NAME_LEN
     if (!team->name) {
         printf("Error allocating memory for team name\n");
         free(team);
+        pressEnterToContinue();
         exit(1);
     }
     strcpy(team->name, name);
