@@ -247,15 +247,19 @@ void simulatePlayoffs(Simulation *sim) {
 // Print comprehensive season summary
 void printSeasonSummary(Simulation *sim) {
     printf("\n\n");
-    printf(COLOR_HEADER "========================================================\n");
-    printf("                  SEASON SUMMARY\n");
-    printf("========================================================\n" COLOR_RESET);
+    printf("%s========================================================%s\n", COLOR_BORDER, COLOR_RESET);
+    printf("%s%s                  SEASON SUMMARY%s\n", COLOR_BOLD, COLOR_HEADER, COLOR_RESET);
+    printf("%s========================================================%s\n", COLOR_BORDER, COLOR_RESET);
 
     // Champion
     printf("\n");
-    printf(COLOR_SUCCESS "  NBA CHAMPION: %s\n" COLOR_RESET, sim->champion->name);
-    printf("  Final Record: %d-%d\n", sim->champion->wins, sim->champion->losses);
-    printf("  Power Ranking: %d\n", sim->champion->PR);
+    printf("%s  NBA CHAMPION: %s%s\n", COLOR_SUCCESS, sim->champion->name, COLOR_RESET);
+    printf("  %sFinal Record:%s %s%d-%d%s\n",
+           COLOR_STAT_LABEL, COLOR_RESET,
+           COLOR_STAT_VALUE, sim->champion->wins, sim->champion->losses, COLOR_RESET);
+    printf("  %sPower Ranking:%s %s%d%s\n",
+           COLOR_STAT_LABEL, COLOR_RESET,
+           COLOR_NUMBER, sim->champion->PR, COLOR_RESET);
     printf("\n");
 
     // Find MVP (highest PPG among all players)
@@ -278,9 +282,18 @@ void printSeasonSummary(Simulation *sim) {
     }
 
     if (mvp) {
-        printf(COLOR_SUCCESS "  SEASON MVP: %s (%s)\n" COLOR_RESET, mvp->name, mvpTeam->name);
-        printf("  PPG: %.1f | Total Points: %d | Games: %d\n",
-               maxPPG, mvp->points, mvp->gamesPlayed);
+        printf("%s  SEASON MVP: %s%s%s (%s%s%s)%s\n",
+               COLOR_SUCCESS,
+               COLOR_PLAYER, mvp->name, COLOR_SUCCESS,
+               COLOR_TEAM_NAME, mvpTeam->name, COLOR_SUCCESS,
+               COLOR_RESET);
+        printf("  %sPPG:%s %s%.1f%s | %sTotal Points:%s %s%d%s | %sGames:%s %s%d%s\n",
+               COLOR_STAT_LABEL, COLOR_RESET,
+               COLOR_STAT_VALUE, maxPPG, COLOR_RESET,
+               COLOR_STAT_LABEL, COLOR_RESET,
+               COLOR_NUMBER, mvp->points, COLOR_RESET,
+               COLOR_STAT_LABEL, COLOR_RESET,
+               COLOR_NUMBER, mvp->gamesPlayed, COLOR_RESET);
         printf("\n");
     }
 
@@ -292,8 +305,10 @@ void printSeasonSummary(Simulation *sim) {
         }
     }
 
-    printf("  BEST REGULAR SEASON: %s (%d-%d)\n",
-           bestTeam.name, bestTeam.wins, bestTeam.losses);
+    printf("  %sBEST REGULAR SEASON:%s %s%s%s (%s%d-%d%s)\n",
+           COLOR_STAT_LABEL, COLOR_RESET,
+           COLOR_TEAM_NAME, bestTeam.name, COLOR_RESET,
+           COLOR_STAT_VALUE, bestTeam.wins, bestTeam.losses, COLOR_RESET);
     printf("\n");
 
     // Top 5 scorers
@@ -329,15 +344,16 @@ void printSeasonSummary(Simulation *sim) {
         }
     }
 
-    printf(COLOR_HEADER "  TOP 5 SCORERS:\n" COLOR_RESET);
+    printf("%s  TOP 5 SCORERS:%s\n", COLOR_SUBHEADER, COLOR_RESET);
     for (int i = 0; i < 5 && i < scorerCount; i++) {
-        printf("  %d. %s (%s) - %.1f PPG\n",
-               i + 1,
-               scorers[i].player->name,
-               scorers[i].team->name,
-               scorers[i].ppg);
+        const char *medalColor = (i == 0) ? COLOR_SUCCESS : COLOR_NUMBER;
+        printf("  %s%d.%s %s%-20s%s (%s%-30s%s) - %s%.1f PPG%s\n",
+               medalColor, i + 1, COLOR_RESET,
+               COLOR_PLAYER, scorers[i].player->name, COLOR_RESET,
+               COLOR_TEAM_NAME, scorers[i].team->name, COLOR_RESET,
+               COLOR_STAT_VALUE, scorers[i].ppg, COLOR_RESET);
     }
 
     printf("\n");
-    printf(COLOR_HEADER "========================================================\n" COLOR_RESET);
+    printf("%s========================================================%s\n", COLOR_BORDER, COLOR_RESET);
 }

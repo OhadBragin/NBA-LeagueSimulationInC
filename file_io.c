@@ -141,35 +141,35 @@ int loadSimulation(Simulation *sim, const char *filename) {
 
 
 char* selectSaveFile() {
-    char *filenames[256]; // Max 256 save files
+    char *filenames[256];
     int count = 0;
 
-    printf(COLOR_HEADER "\n=== Load a Past Season ===\n" COLOR_RESET);
+    printf("%s\n=== Load a Past Season ===%s\n", COLOR_HEADER, COLOR_RESET);
 
-    #ifdef _WIN32
-        WIN32_FIND_DATA fd;
-        HANDLE hFind = FindFirstFile("saves\\*.sav", &fd);
-        if (hFind != INVALID_HANDLE_VALUE) {
-            do {
-                if (count < 256) {
-                    filenames[count++] = _strdup(fd.cFileName);
-                }
-            } while (FindNextFile(hFind, &fd) != 0);
-            FindClose(hFind);
-        }
-    #else
-        DIR *d;
-        struct dirent *dir;
-        d = opendir("saves");
-        if (d) {
-            while ((dir = readdir(d)) != NULL) {
-                if (strstr(dir->d_name, ".sav") && count < 256) {
-                    filenames[count++] = strdup(dir->d_name);
-                }
+#ifdef _WIN32
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = FindFirstFile("saves\\*.sav", &fd);
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if (count < 256) {
+                filenames[count++] = _strdup(fd.cFileName);
             }
-            closedir(d);
+        } while (FindNextFile(hFind, &fd) != 0);
+        FindClose(hFind);
+    }
+#else
+    DIR *d;
+    struct dirent *dir;
+    d = opendir("saves");
+    if (d) {
+        while ((dir = readdir(d)) != NULL) {
+            if (strstr(dir->d_name, ".sav") && count < 256) {
+                filenames[count++] = strdup(dir->d_name);
+            }
         }
-    #endif
+        closedir(d);
+    }
+#endif
 
     if (count == 0) {
         printf(COLOR_WARNING "No saved seasons found in the 'saves' directory.\n" COLOR_RESET);
@@ -177,9 +177,11 @@ char* selectSaveFile() {
     }
 
     for (int i = 0; i < count; i++) {
-        printf("%2d. %s\n", i + 1, filenames[i]);
+        printf("%s%2d.%s %s%s%s\n",
+               COLOR_NUMBER, i + 1, COLOR_RESET,
+               COLOR_INFO, filenames[i], COLOR_RESET);
     }
-    printf(" 0. Cancel\n");
+    printf(" %s0.%s Cancel\n", COLOR_NUMBER, COLOR_RESET);
 
     int choice = getUserChoice(0, count);
 

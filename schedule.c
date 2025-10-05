@@ -114,8 +114,12 @@ int countTodaysGames(const Simulation *sim) {
 // Print games for current day
 void printTodaysGames(const Simulation *sim) {
     printf("\n");
-    printf(COLOR_HEADER "=== Day %d of %d ===\n" COLOR_RESET, sim->currentDay, sim->totalDays);
-    printf("Today's Games:\n\n");
+    printf("%s=== Day %s%d%s of %s%d%s ===%s\n",
+           COLOR_HEADER,
+           COLOR_NUMBER, sim->currentDay, COLOR_HEADER,
+           COLOR_NUMBER, sim->totalDays, COLOR_HEADER,
+           COLOR_RESET);
+    printf("%sToday's Games:%s\n\n", COLOR_SUBHEADER, COLOR_RESET);
 
     int gamesPrinted = 0;
     ScheduleList *curr = sim->matchSchedule;
@@ -123,14 +127,16 @@ void printTodaysGames(const Simulation *sim) {
     while (curr) {
         if (curr->day == sim->currentDay) {
             Match *m = &curr->m;
-            printf("  %s vs %s\n", m->teamA->name, m->teamB->name);
+            printf("  %s%s%s vs %s%s%s\n",
+                   COLOR_TEAM_NAME, m->teamA->name, COLOR_RESET,
+                   COLOR_TEAM_NAME, m->teamB->name, COLOR_RESET);
             gamesPrinted++;
         }
         curr = curr->next;
     }
 
     if (gamesPrinted == 0) {
-        printf("  No games scheduled today.\n");
+        printf("  %sNo games scheduled today.%s\n", COLOR_INFO, COLOR_RESET);
     }
     printf("\n");
 }

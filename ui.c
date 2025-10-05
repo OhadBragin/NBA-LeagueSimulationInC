@@ -7,23 +7,27 @@ void HandleLoadedSeasonMenu(Simulation *sim);
 
 // Print the main menu
 void PrintMainMenu() {
-    printf(COLOR_HEADER "\n=== NBA Simulation Main Menu ===\n" COLOR_RESET);
-    printf("1. Start Next Season\n");
-    printf("2. Load a Past Season\n");
-    printf("3. Factory Reset (Erase All Data)\n");
-    printf("0. Exit\n");
-    printf(COLOR_HEADER "================================\n" COLOR_RESET);
+    printf("%s\n=== NBA Simulation Main Menu ===%s\n", COLOR_HEADER, COLOR_RESET);
+    printf("%s1.%s Start Next Season\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s2.%s Load a Past Season\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s3.%s Factory Reset (Erase All Data)\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s0.%s Exit\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s================================%s\n", COLOR_HEADER, COLOR_RESET);
 }
 
-// Print simulation menu
+
 void PrintSimulationMenu(Simulation *sim) {
-    printf(COLOR_HEADER "\n=== Simulation Menu (%d-%d | Day %d/%d) ===\n" COLOR_RESET,
-           sim->year, sim->year + 1, sim->currentDay, sim->totalDays);
-    printf("1. Continue Simulation\n");
-    printf("2. View Current Standings\n");
-    printf("3. View Team Roster\n");
-    printf("0. End Simulation & Return to Main Menu\n");
-    printf(COLOR_HEADER "=============================================\n" COLOR_RESET);
+    printf("%s\n=== Simulation Menu (%s%d-%d%s | Day %s%d%s/%s%d%s) ===%s\n",
+           COLOR_HEADER,
+           COLOR_NUMBER, sim->year, sim->year + 1, COLOR_HEADER,
+           COLOR_NUMBER, sim->currentDay, COLOR_HEADER,
+           COLOR_NUMBER, sim->totalDays, COLOR_HEADER,
+           COLOR_RESET);
+    printf("%s1.%s Continue Simulation\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s2.%s View Current Standings\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s3.%s View Team Roster\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s0.%s End Simulation & Return to Main Menu\n", COLOR_NUMBER, COLOR_RESET);
+    printf("%s=============================================%s\n", COLOR_HEADER, COLOR_RESET);
 }
 
 // Ask the user how long they want to run
@@ -51,28 +55,14 @@ int askSimulationDuration(Simulation *sim) {
 }
 
 // Handle team selection and display roster
-void viewTeamRoster(Simulation *sim) {
-    printf(COLOR_HEADER "\n=== Select a Team ===\n" COLOR_RESET);
 
-    for (int i = 0; i < TEAMS_COUNT; i++) {
-        printf("%2d. %s\n", i + 1, sim->teams[i].name);
-    }
-    printf(" 0. Back\n");
-
-    int choice = getUserChoice(0, TEAMS_COUNT);
-
-    if (choice == 0) return;
-
-    printTeamInfo(&sim->teams[choice - 1]);
-    pressEnterToContinue();
-}
 
 // Print playoffs qualifiers
 void printPlayoffsQualifiers(Simulation *sim) {
     printf("\n");
-    printf(COLOR_SUCCESS "========================================================\n");
-    printf("           REGULAR SEASON COMPLETE!                     \n");
-    printf("========================================================\n" COLOR_RESET);
+    printf("%s========================================================%s\n", COLOR_SUCCESS, COLOR_RESET);
+    printf("%s           REGULAR SEASON COMPLETE!%s\n", COLOR_SUCCESS, COLOR_RESET);
+    printf("%s========================================================%s\n", COLOR_SUCCESS, COLOR_RESET);
     printf("\n");
 
     // Get top 8 from each conference
@@ -91,17 +81,21 @@ void printPlayoffsQualifiers(Simulation *sim) {
     sortTeamsByRecord(eastTeams, eastCount);
     sortTeamsByRecord(westTeams, westCount);
 
-    printf(COLOR_EAST "EASTERN CONFERENCE PLAYOFFS:\n" COLOR_RESET);
+    printf("%s%sEASTERN CONFERENCE PLAYOFFS:%s\n", COLOR_BOLD, COLOR_EAST, COLOR_RESET);
     for (int i = 0; i < 8 && i < eastCount; i++) {
-        printf("  %d. %s (%d-%d)\n", i+1, eastTeams[i].name,
-               eastTeams[i].wins, eastTeams[i].losses);
+        printf("  %s%d.%s %s%-30s%s %s(%d-%d)%s\n",
+               COLOR_NUMBER, i+1, COLOR_RESET,
+               COLOR_TEAM_NAME, eastTeams[i].name, COLOR_RESET,
+               COLOR_STAT_VALUE, eastTeams[i].wins, eastTeams[i].losses, COLOR_RESET);
     }
 
     printf("\n");
-    printf(COLOR_WEST "WESTERN CONFERENCE PLAYOFFS:\n" COLOR_RESET);
+    printf("%s%sWESTERN CONFERENCE PLAYOFFS:%s\n", COLOR_BOLD, COLOR_WEST, COLOR_RESET);
     for (int i = 0; i < 8 && i < westCount; i++) {
-        printf("  %d. %s (%d-%d)\n", i+1, westTeams[i].name,
-               westTeams[i].wins, westTeams[i].losses);
+        printf("  %s%d.%s %s%-30s%s %s(%d-%d)%s\n",
+               COLOR_NUMBER, i+1, COLOR_RESET,
+               COLOR_TEAM_NAME, westTeams[i].name, COLOR_RESET,
+               COLOR_STAT_VALUE, westTeams[i].wins, westTeams[i].losses, COLOR_RESET);
     }
     printf("\n");
 }
@@ -112,13 +106,15 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
     int endMenuRunning = 1;
 
     while (endMenuRunning) {
-        printf(COLOR_HEADER "\n=== %d-%d Season Complete Menu ===\n" COLOR_RESET, sim->year, sim->year + 1);
-        printf("1. View Final Standings\n");
-        printf("2. View Team Roster\n");
-        printf("3. Start Playoffs\n");
-        printf("4. View Season Summary\n");
-        printf("0. Save and Return to Main Menu\n");
-        printf(COLOR_HEADER "==================================\n" COLOR_RESET);
+        printf("%s\n=== %s%d-%d%s Season Complete Menu ===%s\n",
+               COLOR_HEADER,
+               COLOR_NUMBER, sim->year, sim->year + 1, COLOR_HEADER,
+               COLOR_RESET);
+        printf("%s1.%s View Final Standings\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s2.%s Start Playoffs\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s3.%s View Season Summary\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s0.%s Save and Return to Main Menu\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s==================================%s\n", COLOR_HEADER, COLOR_RESET);
 
         int choice = getUserChoice(0, 3);
 
@@ -128,9 +124,6 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 pressEnterToContinue();
                 break;
             case 2:
-                viewTeamRoster(sim);
-                break;
-            case 3:
                 if (sim->playoffsComplete) {
                     printf(COLOR_WARNING "\nPlayoffs already completed!\n" COLOR_RESET);
                 } else {
@@ -139,7 +132,7 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 }
                 pressEnterToContinue();
                 break;
-            case 4:
+            case 3:
                 if (sim->playoffsComplete) {
                     printSeasonSummary(sim);
                 } else {
@@ -149,7 +142,7 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
                 break;
             case 0:
                 if (sim->playoffsComplete) {
-                    saveSimulation(sim); // Automatically save on exit
+                    saveSimulation(sim);
                     pressEnterToContinue();
                 } else {
                      printf(COLOR_WARNING "\nPlayoffs are not complete. Results will not be saved.\n" COLOR_RESET);
@@ -162,7 +155,6 @@ void HandleSeasonEndMenu(Simulation *sim, int *simRunning) {
     }
 }
 
-// Handle simulation menu
 void HandleSimulationMenu(Simulation *sim, int *simRunning) {
     PrintSimulationMenu(sim);
     int choice = getUserChoice(0, 3);
@@ -204,6 +196,60 @@ void HandleSimulationMenu(Simulation *sim, int *simRunning) {
             printf(COLOR_WARNING "Ending current simulation...\n" COLOR_RESET);
             break;
     }
+}
+
+// Handle simulation menu
+void HandleLoadedSeasonMenu(Simulation *sim) {
+    int loadedMenuRunning = 1;
+    while(loadedMenuRunning) {
+        printf("%s\n=== Loaded %s%d-%d%s Season Menu ===%s\n",
+               COLOR_HEADER,
+               COLOR_NUMBER, sim->year, sim->year + 1, COLOR_HEADER,
+               COLOR_RESET);
+        printf("%s1.%s View Final Standings\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s2.%s View Team Roster\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s3.%s View Season Summary\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s0.%s Back to Main Menu\n", COLOR_NUMBER, COLOR_RESET);
+        printf("%s=================================%s\n", COLOR_HEADER, COLOR_RESET);
+
+        int choice = getUserChoice(0, 3);
+        switch(choice) {
+            case 1:
+                printStandings(sim);
+                pressEnterToContinue();
+                break;
+            case 2:
+                viewTeamRoster(sim);
+                break;
+            case 3:
+                printSeasonSummary(sim);
+                pressEnterToContinue();
+                break;
+            case 0:
+                loadedMenuRunning = 0;
+                break;
+        }
+    }
+}
+
+// Handle team selection and display roster
+void viewTeamRoster(Simulation *sim) {
+    printf("%s\n=== Select a Team ===%s\n", COLOR_HEADER, COLOR_RESET);
+
+    for (int i = 0; i < TEAMS_COUNT; i++) {
+        const char *confColor = sim->teams[i].conference == 0 ? COLOR_EAST : COLOR_WEST;
+        printf("%s%2d.%s %s%s%s\n",
+               COLOR_NUMBER, i + 1, COLOR_RESET,
+               confColor, sim->teams[i].name, COLOR_RESET);
+    }
+    printf(" %s0.%s Back\n", COLOR_NUMBER, COLOR_RESET);
+
+    int choice = getUserChoice(0, TEAMS_COUNT);
+
+    if (choice == 0) return;
+
+    printTeamInfo(&sim->teams[choice - 1]);
+    pressEnterToContinue();
 }
 
 // Handle main menu
@@ -261,7 +307,6 @@ void HandleMainMenu(Simulation *sim, int *running) {
             case 3: { // Factory Reset
                 clearConsole();
                 factoryReset();
-                pressEnterToContinue();
                 clearConsole();
                 break;
             }
@@ -274,32 +319,3 @@ void HandleMainMenu(Simulation *sim, int *running) {
 
 
 // New menu specifically for interacting with loaded data
-void HandleLoadedSeasonMenu(Simulation *sim) {
-    int loadedMenuRunning = 1;
-    while(loadedMenuRunning) {
-        printf(COLOR_HEADER "\n=== Loaded %d-%d Season Menu ===\n" COLOR_RESET, sim->year, sim->year + 1);
-        printf("1. View Final Standings\n");
-        printf("2. View Team Roster\n");
-        printf("3. View Season Summary\n");
-        printf("0. Back to Main Menu\n");
-        printf(COLOR_HEADER "=================================\n" COLOR_RESET);
-
-        int choice = getUserChoice(0, 3);
-        switch(choice) {
-            case 1:
-                printStandings(sim);
-                pressEnterToContinue();
-                break;
-            case 2:
-                viewTeamRoster(sim);
-                break;
-            case 3:
-                printSeasonSummary(sim);
-                pressEnterToContinue();
-                break;
-            case 0:
-                loadedMenuRunning = 0;
-                break;
-        }
-    }
-}

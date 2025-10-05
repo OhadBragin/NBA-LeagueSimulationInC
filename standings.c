@@ -43,34 +43,41 @@ void printConferenceStandings(const Simulation *sim, int conference) {
     // Sort them
     sortTeamsByRecord(confTeams, confCount);
 
+    // Determine conference colors
+    const char *confColor = (conference == 0) ? COLOR_EAST : COLOR_WEST;
+    const char *confName = (conference == 0) ? "EASTERN CONFERENCE" : "WESTERN CONFERENCE";
+
     // Header
-    printf(COLOR_BORDER "\n============================================================\n" COLOR_RESET);
-    if (conference == 0)
-        printf(COLOR_EAST "                    EASTERN CONFERENCE\n" COLOR_RESET);
-    else
-        printf(COLOR_WEST "                    WESTERN CONFERENCE\n" COLOR_RESET);
-    printf(COLOR_BORDER "============================================================\n" COLOR_RESET);
+    printf("\n%s============================================================%s\n", COLOR_BORDER, COLOR_RESET);
+    printf("%s%s                    %s%s\n", COLOR_BOLD, confColor, confName, COLOR_RESET);
+    printf("%s============================================================%s\n", COLOR_BORDER, COLOR_RESET);
 
     // Print table header
-    printf("\n  Rank %-25s %-10s %-6s %-6s\n",
-           "Team", "Record", "PR", "PPG");
-    printf("-------------------------------------------------------------\n");
+    printf("\n  %sRank %-25s %-10s %-6s %-6s%s\n",
+           COLOR_STAT_LABEL, "Team", "Record", "PR", "PPG", COLOR_RESET);
+    printf("%s-------------------------------------------------------------%s\n", COLOR_BORDER, COLOR_RESET);
 
     // Print teams
     for (int i = 0; i < confCount; i++) {
-        printf("  %2d   %-25s %2dW - %2dL  %4d   %.1f\n",
-               i + 1,
-               confTeams[i].name,
-               confTeams[i].wins,
-               confTeams[i].losses,
-               confTeams[i].PR,
+        // Highlight playoff teams (top 8)
+        const char *rankColor = (i < 8) ? COLOR_SUCCESS : COLOR_NUMBER;
+        const char *teamColor = (i < 8) ? COLOR_TEAM_NAME : COLOR_PLAYER;
+
+        printf("  %s%2d%s   %s%-25s%s %s%2dW - %2dL%s  %s%4d%s   %s%.1f%s\n",
+               rankColor, i + 1, COLOR_RESET,
+               teamColor, confTeams[i].name, COLOR_RESET,
+               COLOR_STAT_VALUE, confTeams[i].wins, confTeams[i].losses, COLOR_RESET,
+               COLOR_NUMBER, confTeams[i].PR, COLOR_RESET,
+               COLOR_STAT_VALUE,
                (confTeams[i].wins + confTeams[i].losses > 0)
                    ? (double)confTeams[i].seasonPoints / (confTeams[i].wins + confTeams[i].losses)
-                   : 0.0);
+                   : 0.0,
+               COLOR_RESET);
     }
 
-    printf(COLOR_BORDER "============================================================\n" COLOR_RESET);
+    printf("%s============================================================%s\n", COLOR_BORDER, COLOR_RESET);
 }
+
 
 // Print both conferences
 void printStandings(const Simulation *sim) {

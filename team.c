@@ -79,22 +79,23 @@ void printTeamInfo(const Team *team) {
     const char *confName  = team->conference == 0 ? "Eastern Conference" : "Western Conference";
 
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
-    printf("%s%s            %-25s%s\n", COLOR_BOLD, COLOR_HEADER, team->name, COLOR_RESET);
+    printf("%s%s            %-25s%s\n", COLOR_BOLD, COLOR_TEAM_NAME, team->name, COLOR_RESET);
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
 
     printf("%sConference:%s %s%s%s\n",
            COLOR_STAT_LABEL, COLOR_RESET, confColor, confName, COLOR_RESET);
 
-    printf("%sRecord:%s %s%d-%d%s\n",
+    printf("%sRecord:%s     %s%d-%d%s\n",
            COLOR_STAT_LABEL, COLOR_RESET, COLOR_STAT_VALUE, team->wins, team->losses, COLOR_RESET);
 
-    printf("%sPower Ranking:%s %s%d%s\n",
+    printf("%sPower Rank:%s %s%d%s\n",
            COLOR_STAT_LABEL, COLOR_RESET, COLOR_NUMBER, team->PR, COLOR_RESET);
 
     int gamesPlayed = team->wins + team->losses;
     if (gamesPlayed > 0) {
-        printf("%sPoints Per Game:%s %.1f\n",
-               COLOR_STAT_LABEL, COLOR_RESET, (double)team->seasonPoints / gamesPlayed);
+        printf("%sPPG:%s        %s%.1f%s\n",
+               COLOR_STAT_LABEL, COLOR_RESET,
+               COLOR_STAT_VALUE, (double)team->seasonPoints / gamesPlayed, COLOR_RESET);
     }
 
     printf("%s=====================================%s\n", COLOR_BORDER, COLOR_RESET);
@@ -104,6 +105,7 @@ void printTeamInfo(const Team *team) {
 
     printf("\n");
 }
+
 
 // Add player (future feature)
 void addPlayerToTeam(Team *team, const char *playerName) {
