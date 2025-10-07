@@ -91,20 +91,7 @@ Each `.c` file contains skeleton functions that need to be implemented:
 - `MAX_GAMES_PER_DAY`: 16 maximum daily games
 - `REGULAR_SEASON_DAYS`: 82 game regular season
 - `PLAYOFFS_DAYS`: 28 playoff games
-- `FINALS_DAYS`: 7 game finals series
-
-## Features to Implement
-
-- [ ] Team and player initialization
-- [ ] Schedule generation (regular season, playoffs)
-- [ ] Game simulation with realistic scoring
-- [ ] Power rankings and standings
-- [ ] Statistics tracking
-- [ ] Save/load functionality
-- [ ] User interface and controls
-- [ ] Playoff bracket generation
-- [ ] Season summary and reports
-
+- `FINALS_DAYS`: 7 game finals 
 ## Usage Example
 
 ```c
