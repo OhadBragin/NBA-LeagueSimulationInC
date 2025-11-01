@@ -1,107 +1,129 @@
-# Basketball Simulation Project
+/**
+ * @file basketball_sim.h
+ * @brief Main header file for the C-Sim Basketball League.
+ *
+ * This file contains all the core data structures, constants,
+ * and function prototypes used across the entire simulation project.
+ * It serves as the central "glue" that connects all the different
+ * .c modules.
+ */
 
-A comprehensive basketball league simulation written in C.
+#ifndef BASKETBALL_SIM_H
+#define BASKETBALL_SIM_H
 
-## Project Structure
+// --- Standard Library Includes ---
+#include <stdio.h>    // For file I/O (printf, FILE, fopen, etc.)
+#include <stdlib.h>   // For memory allocation (malloc, free) and random numbers (rand, srand)
+#include <string.h>   // For string manipulation (strcpy, strcmp)
+#include <time.h>     // For seeding the random number generator (time)
+#include <unistd.h>   // For sleep() (optional, for pacing)
 
-```
-basketball_sim/
-├── main.c              # Entry point and main program flow
-├── basketball_sim.h    # Main header with all structs and function declarations
-├── simulation.c        # Core simulation logic and main loop
-├── team.c             # Team management and statistics
-├── player.c           # Player management and statistics  
-├── match.c            # Game simulation and scoring
-├── schedule.c         # Schedule generation and management
-├── standings.c        # League standings and sorting
-├── utils.c            # Utility functions and helpers
-├── file_io.c          # Save/load functionality
-├── Makefile           # Build configuration
-└── README.md          # This file
-```
+// --- Project Constants ---
+#define MAX_PLAYERS 15           // Players per team
+#define TEAMS_COUNT 30           // Teams in league
+#define MAX_GAMES_PER_DAY 16     // Max games in one day (30 teams / 2 = 15, 16 is safe)
+#define REGULAR_SEASON_DAYS 82   // Total days in the regular season
 
-## Data Structures
+// For team conferences
+#define CONFERENCE_EAST 0
+#define CONFERENCE_WEST 1
 
-### Player
-- `name[30]`: Player name
-- `points`: Total points scored this season
-- `gamesPlayed`: Total games played this season
+// For match stages
+#define STAGE_REGULAR 0
+#define STAGE_PLAYOFFS 1
+#define STAGE_FINALS 2
 
-### Team  
-- `name[50]`: Team name
-- `PR`: Power ranking
-- `wins/losses`: Team record
-- `conference`: East (0) or West (1)
-- `seasonPoints`: Total points scored by team
-- `roster[MAX_PLAYERS]`: Array of team players
+// --- Data Structures ---
 
-### Match
-- `teamA/teamB`: Pointers to competing teams
-- `scoreA/scoreB`: Final scores
-- `stage`: Game type (0=Regular, 1=Playoffs, 2=Finals)
+/**
+ * @struct Player
+ * @brief Represents a single player.
+ */
+typedef struct {
+    char name[30];
+    int points;       // Total points scored this season
+    int gamesPlayed;  // Total games played this season
+} Player;
 
-### Simulation
-- `currentDay/totalDays`: Season progress tracking
-- `teams[TEAMS_COUNT]`: All league teams
-- `schedule[MAX_GAMES_PER_DAY]`: Daily game schedule
-- `gamesToday`: Number of games scheduled today
+/**
+ * @struct Team
+ * @brief Represents a single team.
+ */
+typedef struct {
+    char name[50];
+    int PR;           // Power Ranking (higher is better)
+    int wins;
+    int losses;
+    int conference;   // 0 = East, 1 = West
+    int seasonPoints; // Total points scored by team
+    Player roster[MAX_PLAYERS];
+} Team;
 
-## Building the Project
+/**
+ * @struct Match
+ * @brief Represents a single game.
+ *
+ * @note We use team indices (teamA_idx, teamB_idx) instead of
+ * pointers (Team* teamA). This makes saving and loading the
+ * simulation state to a file *much* simpler and safer.
+ */
+typedef struct {
+    int teamA_idx;    // Index of team A in the main simulation.teams array
+    int teamB_idx;    // Index of team B in the main simulation.teams array
+    int scoreA;
+    int scoreB;
+    int stage;        // 0=Regular, 1=Playoffs, 2=Finals
+} Match;
 
-### Prerequisites
-- GCC compiler
-- Make utility
+/**
+ * @struct Simulation
+ * @brief Holds the entire state of the league simulation.
+ */
+typedef struct {
+    int currentDay;
+    int totalDays;
+    Team teams[TEAMS_COUNT];
+    Match schedule[MAX_GAMES_PER_DAY]; // Schedule for the *current* day
+    int gamesToday;                    // Number of games scheduled today
+    int simulationStage;               // 0=Regular, 1=Playoffs, etc.
+} Simulation;
 
-### Compile
-```bash
-make                # Build the project
-make debug         # Build with debug symbols
-make release       # Optimized release build
-```
 
-### Run
-```bash
-make run           # Compile and run
-./basketball_sim   # Run directly
-```
+// --- Function Prototypes ---
 
-### Clean
-```bash
-make clean         # Remove build files
-make rebuild       # Clean and rebuild
-```
+// --- simulation.c ---
+void initializeSimulation(Simulation *sim);
+void runSimulation(Simulation *sim);
+void simulateDay(Simulation *sim);
+void advanceDay(Simulation *sim);
 
-## Implementation Guide
+// --- team.c ---
+void initializeAllTeams(Team teams[TEAMS_COUNT]);
+void updateTeamStats(Team *team, int pointsScored, int pointsAllowed);
 
-Each `.c` file contains skeleton functions that need to be implemented:
+// --- player.c ---
+void initializePlayers(Team *team);
+void distributePlayerPoints(Team *team, int teamScore);
 
-1. **simulation.c**: Main game loop, initialization, day advancement
-2. **team.c**: Team creation, stat updates, power rankings
-3. **player.c**: Player stat tracking and management
-4. **match.c**: Game simulation algorithm, score calculation
-5. **schedule.c**: Season and playoff schedule generation
-6. **standings.c**: Sorting and displaying league standings
-7. **utils.c**: Helper functions, random numbers, user input
-8. **file_io.c**: Save/load game state, export results
+// --- match.c ---
+void runMatch(Simulation *sim, Match *match);
+int calculateScore(int powerRanking);
 
-## Constants
+// --- schedule.c ---
+void generateDailySchedule(Simulation *sim);
+void initializePlayoffs(Simulation *sim); // Stub for future
+void initializeFinals(Simulation *sim);   // Stub for future
 
-- `MAX_PLAYERS`: 15 players per team
-- `TEAMS_COUNT`: 30 teams in league  
-- `MAX_GAMES_PER_DAY`: 16 maximum daily games
-- `REGULAR_SEASON_DAYS`: 82 game regular season
-- `PLAYOFFS_DAYS`: 28 playoff games
-- `FINALS_DAYS`: 7 game finals 
-## Usage Example
+// --- standings.c ---
+void printStandings(Simulation *sim);
+int compareTeams(const void *a, const void *b);
 
-```c
-// Initialize simulation
-Simulation sim;
-initializeSimulation(&sim);
+// --- utils.c ---
+void clearScreen();
+void pauseExecution();
 
-// Run season
-runSimulation(&sim);
+// --- file_io.c ---
+int saveSimulation(const Simulation *sim, const char *filename);
+int loadSimulation(Simulation *sim, const char *filename);
 
-// View results
-printStandings(&sim);
-```
+#endif // BASKETBALL_SIM_H
