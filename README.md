@@ -124,41 +124,7 @@ The main struct that holds the entire state of the league.
 | `schedule` | `Match[]` | An array of games scheduled for the current day |
 | `gamesToday` | `int` | The number of games scheduled for the current day |
 
-## ⚙️ Building & Running
 
-The included Makefile provides several targets for convenience.
-
-### Compile
-
-```bash
-# Build the project with debug symbols
-make
-# or
-make debug
-
-# Build an optimized release version
-make release
-```
-
-### Run
-
-```bash
-# Compile (if needed) and run the debug build
-make run
-
-# Run the executable directly
-./basketball_sim
-```
-
-### Clean
-
-```bash
-# Remove all build artifacts (.o files and executable)
-make clean
-
-# Clean and then rebuild
-make rebuild
-```
 
 ## 🗺️ Implementation Guide
 
@@ -187,16 +153,4 @@ runSimulation(&sim);
 printStandings(&sim);
 ```
 
-## 📝 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/basketball-sim/issues).
-
-## 👤 Author
-
-Your Name - [@your_handle](https://twitter.com/your_handle)
-
-Project Link: [https://github.com/your-username/basketball-sim](https://github.com/your-username/basketball-sim)
